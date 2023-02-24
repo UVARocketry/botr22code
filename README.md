@@ -2,6 +2,7 @@
 Battle of the Rockets 2022-23 Github Repository for payload, ground sensors, ground station, etc.
 
 Shown below are the respective folders and the computers/microcontrollers the code wherein is supposed to run on:
+
     /GroundStation      <- - ->     Raspberry Pi 3
 
     /Payload            <- - ->     Teensy 4.0
