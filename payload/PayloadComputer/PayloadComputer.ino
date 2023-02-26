@@ -1,40 +1,54 @@
+//LIBRARY INCLUDES
 #include <Adafruit_GPS.h>
 
+//SERIAL PORT DEFINITIONS
 //may be defined to incorrect serial ports rn, will fix
 #define XbeeR Serial1
 #define XbeeT Serial2
 #define GPSSerial Serial3
+#define LEDPIN 13
 
-// Connect to the GPS on the hardware port
+//DEBUG FLAGS
+//set any of these to 'true' for status updates to be sent to the USB Serial Console
+//alternatively, you could use the debugger
+#define SERIAL_PORT_DEBUG true
+#define GPS_DEBUG false
+#define TRANSMITT_DEBUG true
+
+//FUNCTION HEADERS
+void transmittAllData();
+bool waitGPSfix();
+
+//Initializing GPS Object using hardware serial port
 Adafruit_GPS GPS(&GPSSerial);
-// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
-// Set to 'true' if you want to debug and listen to the raw GPS sentences
-#define GPSECHO false
 
-uint32_t timer = millis();
+//Ran once by microcontroller
+void setup()
+{
+  // indicate that the payload computer is not ready to fly
+  pinMode(LEDPIN, OUTPUT);
+  digitalWrite(LEDPIN, HIGH);
 
-//State Estimation for rocket based on GPS Data
-int currState = 0;
-int prevlat = 0;
-int launchPad = 0;
-int takeoff = 1;
-int ascent = 2;
-int apogee = 3;
-int descent = 4;
-int landing = 5;
-
-
-void setup() {
-  //Start all serial ports
+  //STARTING SERIAL PORTS
+  //USB Serial
   Serial.begin(115200);
-  XbeeR.begin(9600);
-  //Serial.println("Xbee Receive Serial begun!");
-  XbeeT.begin(9600);
-  //Serial.println("Xbee Transmit Serial begun!");
-  GPS.begin(9600);
-  //Serial.println("GPS Serial begun!");
+  if(SERIAL_PORT_DEBUG) Serial.println("USB Serial begun!");
 
-  
+  //Xbee Reciever Serial
+  XbeeR.begin(9600);
+  if(SERIAL_PORT_DEBUG) Serial.println("Xbee Receive Serial begun!");
+
+  //Xbee Transmitter Serial
+  XbeeT.begin(9600);
+  if(SERIAL_PORT_DEBUG) Serial.println("Xbee Transmit Serial begun!");
+
+  //GPS Serial
+  GPS.begin(9600);
+  if(SERIAL_PORT_DEBUG) Serial.println("GPS Serial begun!");
+
+  delay(2000); //give some time for all ports to open connection
+
+  //GPS SETUP
   // turn on RMC (recommended minimum) and GGA (fix data) including altitude
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   // Set the update rate
@@ -42,108 +56,139 @@ void setup() {
   // Request updates on antenna status, comment out to keep quiet
   //GPS.sendCommand(PGCMD_ANTENNA);
 
-  //get latitude once (used for state estimation)
-  prevlat = GPS.latitude;
-  delay(1000);
+  delay(500); //give some time for commands above to run
 
+  //TODO: create functions here that run until RS data is being acquired and GPS has a fix
+
+  //signal that payload is ready for flight
+  //note that this does not mean that the Ground Station is ready
+  digitalWrite(LEDPIN, LOW);
 }
 
 
-void loop() {
+// two read sources: GPS and XbeeR
+// need to poll both
+// once acceptable amount of data is read for any sources, transmitt all in csv format
 
-  // read data from the GPS in the 'main loop'
+/**
+  Data is sent in csv format below:
+  "rs1_data_counter, rs2_data_counter, gps_data_counter, RS1_DATA (expand), RS2_DATA (expand), GPS_DATA (expand)"
+
+  RS1_DATA, RS2_DATA => sensor_num, pressure, temperature, humidity, solar_voltage
+  GPS_DATA => latitude, longitude, altitude, hour, minute, seconds, milliseconds
+
+
+  GPS Data is updated at 1 Hz (as set in the setup() function).
+  Both RS Data is updated at 2 Hz.
+**/
+
+// These are incremented whenever new, respective data is captured
+// Note that data is still sent even when one or two of these is zero. The Ground Station should check for this case. 
+int rs1_data_counter = 0;
+int rs2_data_counter = 0;
+int gps_data_counter = 0;
+
+// Ran over and over by microcontroller:
+// 1. Save data packet counters
+// 2. Check for GPS, RS data. Get data, possibly through multiple loops.
+// 3. Once new data packet for any source is received, transmmit all data
+void loop()
+{
+
+  // 1. Get total data packets counter
+  int data_counter = rs1_data_counter + rs2_data_counter + gps_data_counter;
+
+  // 2.
+  // ---- GPS DATA HANDLING ----
+  // Get single char from GPS. Value will be 0, if nothing read. 
   char c = GPS.read();
-  // if a sentence is received, we can check the checksum, parse it...
-  if (GPS.newNMEAreceived()) {
-    // a tricky thing here is if we print the NMEA sentence, or data
-    // we end up not listening and catching other sentences!
-    // so be very wary if using OUTPUT_ALLDATA and trying to print out data
-    Serial.print(GPS.lastNMEA()); // this also sets the newNMEAreceived() flag to false
-    if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-      return; // we can fail to parse a sentence in which case we should just wait for another
+
+  // check if new NMEA sentence is ready
+  if (GPS.newNMEAreceived())
+  {
+    // print GPS data to USB Serial, if true
+    if (GPS_DEBUG)
+    {
+      Serial.print("GPS DATA: ");
+      Serial.println(GPS.lastNMEA());
+    }
+
+    // re-run loop() if GPS line parsing fails
+    if(!GPS.parse(GPS.lastNMEA())) return;
+
+    // may need to do some checks for GPS.fix here
+
+    // increment gps data counter
+    gps_data_counter++;
   }
-  //uncommented gps data that we probably don't need, may readd/delete late
-  // approximately every 2 seconds or so, print out the current stats
-  if (millis() - timer > 2000) {
-    timer = millis(); // reset the timer
 
-    //state estimation
-    switch(currState){
-      case 0:
-      //launch?
-      if(GPS.latitude - prevlat != 0){
-        currState = 1;
-       }
-        break;
-            
-      case 1:
-      //ascent?
-      if(GPS.latitude != 0){
-        currState = 2;
-      }
-        break;
+  // ---- REMOTE SENSOR DATA HANDLING ----
+  
 
-      case 2:
-      //apogee?
-      if(GPS.latitude - prevlat == 0){
-        currState = 3;
-      }
-        break;
 
-      case 3:
-      //descent?              
-      if(GPS.latitude != 0){
-        currState = 4;
-      }
-        break;
 
-      case 4:
-      //landing?
-      if(GPS.latitude - prevlat == 0){
-        currState = 5;
-      }
-        break;
+  // 3. Transmitt Data, if ready
+  // get current total data packets, compare with previous total
+  new_data_counter = rs1_data_counter + rs2_data_counter + gps_data_counter;
+  if (new_data_counter > prev_data_counter) transmittAllData();
+}
 
-      default:
-        break;
-      }
 
-    if(currState = 4){
-      if(XbeeR.available()){
-        if(XbeeT.available()){
-          //Transmits Remote Sensor Data
-          XbeeT.print(XbeeR.read());
-        
-          //Transmits GPS Data
-          XbeeT.println("Time: ");
-          if (GPS.hour < 10) { XbeeT.print('0'); }
-          XbeeT.print(GPS.hour, DEC); XbeeT.print(':');
-          if (GPS.minute < 10) { XbeeT.print('0'); }
-          XbeeT.print(GPS.minute, DEC); XbeeT.print(':');
-          if (GPS.seconds < 10) { XbeeT.print('0'); }
-          XbeeT.print(GPS.seconds, DEC); XbeeT.print('.');
-          //XbeeT.print(GPS.milliseconds);
-          //XbeeT.print("Date: ");
-          //XbeeT.print(GPS.day, DEC); XbeeT.print('/');
-          //XbeeT.print(GPS.month, DEC); XbeeT.print("/20");
-          //XbeeT.println(GPS.year, DEC);
-          //XbeeT.print("Fix: "); XbeeT.print((int)GPS.fix);
-          //XbeeT.print(" quality: "); XbeeT.println((int)GPS.fixquality);
-          if (GPS.fix) {
-            XbeeT.print("Location: ");
-            XbeeT.print(GPS.latitude, 4); XbeeT.print(GPS.lat);
-            XbeeT.print(", ");
-            XbeeT.print(GPS.longitude, 4); XbeeT.print(GPS.lon); //don't know why there's two prints
-            XbeeT.print("Speed (knots): "); XbeeT.println(GPS.speed); //don't know why there's two prints
-            XbeeT.print("Angle: "); XbeeT.println(GPS.angle);
-            XbeeT.print("Altitude: "); XbeeT.println(GPS.altitude);
-            XbeeT.print("Satellites: "); XbeeT.println((int)GPS.satellites);
-            //XbeeT.print("Antenna status: "); XbeeT.println((int)GPS.antenna);
-            prevlat = GPS.latitude;
-          }
-          XbeeT.println("Current State: " + currState);
-        }
-      }
-    }  
+
+//Transmitts all data using Xbee Radio
+//may need to check amount of time it takes to run this
+//if it is high (on the order of milliseconds), may need to find a more effecient method of printing
+//because this could limit the rate at which we poll the GPS and Radio for new data
+void transmittAllData()
+{
+  //PACKET NUMBER
+  //rs1_data_counter, rs2_data_counter, gps_data_counter
+  XbeeT.print(rs1_data_counter); XbeeT.print(",");
+  XbeeT.print(rs2_data_counter); XbeeT.print(",");
+  XbeeT.print(gps_data_counter); XbeeT.print(",");
+
+
+  //REMOTE SENSOR 1 
+
+
+  //REMOTE SENSOR 2
+
+
+  //  GPS
+  //latitude (deg), longitude (deg), altitude (meters), hour, minute, seconds, milliseconds
+  XbeeT.print(GPS.latitude_fixed); XbeeT.print(",");
+  XbeeT.print(GPS.longitude_fixed); XbeeT.print(",");
+  XbeeT.print(GPS.altitude); XbeeT.print(",");
+  XbeeT.print(GPS.hour); XbeeT.print(",");
+  XbeeT.print(GPS.minute); XbeeT.print(",");
+  XbeeT.print(GPS.seconds); XbeeT.print(",");
+  XbeeT.print(GPS.milliseconds); XbeeT.println();
+
+  if(TRANSMITT_DEBUG)
+  {
+    Serial.print("Transmitting: ")
+    Serial.print(rs1_data_counter); Serial.print(",");
+    Serial.print(rs2_data_counter); Serial.print(",");
+    Serial.print(gps_data_counter); Serial.print(",");
+    //rs1 data
+    //rs2 data
+    //see https://github.com/adafruit/Adafruit_GPS/blob/master/src/Adafruit_GPS.h#L178 for why / 1000000.0
+    Serial.print(GPS.latitude_fixed / 1000000.0); Serial.print(","); 
+    Serial.print(GPS.longitude_fixed) / 1000000.0; Serial.print(",");
+    Serial.print(GPS.altitude); Serial.print(",");
+    Serial.print(GPS.hour); Serial.print(",");
+    Serial.print(GPS.minute); Serial.print(",");
+    Serial.print(GPS.seconds); Serial.print(",");
+    Serial.print(GPS.milliseconds); Serial.println();
   }
 }
+
+
+//waits for a GPS fix to be acquired
+bool waitGPSfix()
+{
+  while(!GPS.fix){
+    //do something
+  }
+}
+

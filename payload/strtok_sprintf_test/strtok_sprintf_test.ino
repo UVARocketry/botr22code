@@ -19,6 +19,7 @@ void loop() {
 
   char buffer [120];
   sprintf(buffer, "Sensor: %c, Pressure: %d, Temp: %d, Humidity: %d, SV: %d, Long: %d, Lat: %d, Speed: %d", 
-  token1, token2, token 3, token4, token5, longitude, latitude, speed);
+  token1, token2, token3, token4, token5, longitude, latitude, speed);
   Serial.println(buffer);
+  delay(500);
 }
