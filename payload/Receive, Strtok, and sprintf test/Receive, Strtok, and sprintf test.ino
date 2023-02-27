@@ -20,18 +20,18 @@ void loop() {
 
   remoteDataBuffer [0] = Serial1.read();
     //not sure if '1' or 1
-    if(remoteDataBuffer[0] == '1' || '2'){
+    if(remoteDataBuffer[0] == '1' || remoteDataBuffer[0] == '2'){
       while(commaCounter < 5){
         currentIndexInBuffer++;
         remoteDataBuffer [currentIndexInBuffer] = Serial1.read();
-        if(remoteDataBuffer [currentIndexInBuffer] == ','){
+        if(remoteDataBuffer[currentIndexInBuffer] == ','){
           commaCounter++;
         }
       }
       //gets three chars more after the forth comma
       for(int i = 0; i < 3; i++){
         currentIndexInBuffer++;
-        remoteDataBuffer [currentIndexInBuffer] == Serial1.read();
+        remoteDataBuffer[currentIndexInBuffer] = Serial1.read();
       }
     }
   //parses all the commas
@@ -49,6 +49,8 @@ void loop() {
   sprintf(buffer, "Sensor: %s, Pressure: %s, Temp: %s, Humidity: %s, SV: %s, Long: %s, Lat: %s, Speed: %s", 
   token1, token2, token3, token4, token5, longitude, latitude, speed);
   Serial.println(buffer);
+
+  delay(1000);
 
   // if (counter == 4) {
   //   i++;
