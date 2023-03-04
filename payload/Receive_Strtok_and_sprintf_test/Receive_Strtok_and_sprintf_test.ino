@@ -1,8 +1,12 @@
 #include <Adafruit_GPS.h>
 
+#define GPSECHO false
+
 
 int commaCounter;
 int currentIndexInBuffer;
+
+uint32_t timerActual = millis();
 
 //  What the data is read into
 char remoteDataBuffer[40];
@@ -11,7 +15,7 @@ char remoteDataBuffer[40];
 char buffer[250];
 
 // Delay timer
-int timer = 100;
+int timer = 25;
 
 char *sensNum;
 char *pressure;
@@ -43,33 +47,19 @@ void setup() {
   // Set the update rate
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
 
-  delay(30000);
-
-  while(!GPS.fix){
-    Serial.print("Not connected");
-    delay(5000);
-  }
+  delay(3000);
 }
 
 char c;
 
 void loop() {
-  //resets all the counters
-  
   c = GPS.read();
-
-  // if (GPSECHO)
-  //   if (c) Serial.print(c);
 
   if (GPS.newNMEAreceived()) {
     GPS.lastNMEA();
     if (!GPS.parse(GPS.lastNMEA())) {
       return;
     }
-  }
-
-  if (Serial1.available()) {
-    Serial.write(Serial1.read());
   }
 
   commaCounter = 1;
@@ -98,7 +88,6 @@ void loop() {
     }
 
     //gets three chars more after the forth comma
-    // ****SOMEHOW this does not work and the loop above just reads the next 3 values anyways
     for (int i = 0; i < 4; i++) {
       currentIndexInBuffer++;
 
@@ -111,22 +100,22 @@ void loop() {
 
     //parses all the commas
     sensNum = strtok(remoteDataBuffer, ",");
-    pressure = strtok(NULL, ",");
     temp = strtok(NULL, ",");
+    pressure = strtok(NULL, ",");
     humidity = strtok(NULL, ",");
     solarVolt = strtok(NULL, ",");
 
-    dtostrf(GPS.hour, 2, 0, gpsHour);
-    dtostrf(GPS.minute, 2, 0, gpsMin);
-    dtostrf(GPS.seconds, 2, 0, gpsMSec);
-    dtostrf(GPS.latitude, 15, 6, gpsLat);
-    dtostrf(GPS.longitude, 15, 6, gpsLong);
-    dtostrf(GPS.speed, 10, 4, gpsSpeed);
-    dtostrf(GPS.angle, 10, 4, gpsAngle);
-    dtostrf(GPS.altitude, 10, 4, gpsAltitude);
-    dtostrf(GPS.satellites, 10, 4, gpsSatellites);
-
-    Serial.println(gpsHour);
+    // Converts gps data to character arrays
+    dtostrf(GPS.hour, 1, 0, gpsHour);
+    dtostrf(GPS.minute, 1, 0, gpsMin);
+    dtostrf(GPS.seconds, 1, 0, gpsSec);
+    dtostrf(GPS.milliseconds, 1, 0, gpsMSec);
+    dtostrf(GPS.latitude, 1, 4, gpsLat);
+    dtostrf(GPS.longitude, 1, 4, gpsLong);
+    dtostrf(GPS.speed, 1, 4, gpsSpeed);
+    dtostrf(GPS.angle, 1, 4, gpsAngle);
+    dtostrf(GPS.altitude, 1, 4, gpsAltitude);
+    dtostrf(GPS.satellites, 1, 0, gpsSatellites);
 
     numTemp = atof(temp);
     numSV = atof(solarVolt);
@@ -136,5 +125,6 @@ void loop() {
       sprintf(buffer, "Sensor: %s, Time: %s:%s:%s:%s Long: %s, Lat: %s, Speed: %s, Angle: %s, Altitude: %s, Satellites: %s, Temp: %s, Pressure: %s, Humidity: %s, SV: %s", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt);
       Serial.println(buffer);
     }
+    // }
   }
 }
