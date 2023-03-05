@@ -2,11 +2,8 @@
 
 #define GPSECHO false
 
-
 int commaCounter;
 int currentIndexInBuffer;
-
-uint32_t timerActual = millis();
 
 //  What the data is read into
 char remoteDataBuffer[40];
@@ -105,7 +102,7 @@ void loop() {
     humidity = strtok(NULL, ",");
     solarVolt = strtok(NULL, ",");
 
-    // Converts gps data to character arrays
+    // Converts gps data from float to string (character arrays)
     dtostrf(GPS.hour, 1, 0, gpsHour);
     dtostrf(GPS.minute, 1, 0, gpsMin);
     dtostrf(GPS.seconds, 1, 0, gpsSec);
@@ -117,14 +114,16 @@ void loop() {
     dtostrf(GPS.altitude, 1, 4, gpsAltitude);
     dtostrf(GPS.satellites, 1, 0, gpsSatellites);
 
+    //converts remote sensor temp and solar voltage from string (char arrays) to to float values (used for the reasonability checks)
     numTemp = atof(temp);
     numSV = atof(solarVolt);
 
+    //reasonability checks for temp and solar voltage
     if (!(numTemp > 40 || numTemp < 0 || numSV > 15 || numSV < 2)) {
       //concatenates the remote sensor and gps data
       sprintf(buffer, "Sensor: %s, Time: %s:%s:%s:%s Long: %s, Lat: %s, Speed: %s, Angle: %s, Altitude: %s, Satellites: %s, Temp: %s, Pressure: %s, Humidity: %s, SV: %s", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt);
+      //prints it all out to the serial monitor
       Serial.println(buffer);
     }
-    // }
   }
 }

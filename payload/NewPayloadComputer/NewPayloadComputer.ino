@@ -6,8 +6,14 @@
 //COUNTERS FOR PARSING
 int commaCounter = 0;
 int currentIndexInBuffer = 0;
+
+//What the data is read into
 char remoteDataBuffer[40];
+//What is written out
 char buffer[160];
+
+//Delay timer, can be changed as necessary
+int timer = 25;
 
 // These are incremented whenever new, respective data is captured
 // Note that data is still sent even when one or two of these is zero. The Ground Station should check for this case.
@@ -21,16 +27,22 @@ char *pressure;
 char *temp;
 char *humidity;
 char *solarVolt;
-char gpsHour[];
-char gpsMin[];
-char gpsSec[];
-char gpsMSec[];
-char gpsLat[];
-char gpsLong[];
-char gpsSpeed[];
-char gpsAngle[];
-char gpsAltitude[];
-char gpsSatellites[];
+char c;
+char gpsHour[2];
+char gpsMin[2];
+char gpsSec[2];
+char gpsMSec[5];
+char gpsLat[15];
+char gpsLong[15];
+char gpsSpeed[10];
+char gpsAngle[10];
+char gpsAltitude[10];
+char gpsSatellites[10];
+
+//VARIABLES USED FOR REASONABILITY CHECKS
+float numSens;
+float numTemp;
+float numSV;
 
 //SERIAL PORT DEFINITIONS
 #define XbeeR Serial1
@@ -41,7 +53,7 @@ char gpsSatellites[];
 //DEBUG FLAGS
 //set any of these to 'true' for status updates to be sent to the USB Serial Console
 //alternatively, you could use the debugger
-#define SERIAL_PORT_DEBUG true
+#define SERIAL_PORT_DEBUG false
 #define GPS_DEBUG false
 #define TRANSMITT_DEBUG true
 
@@ -58,8 +70,6 @@ void setup() {
   // indicate that the payload computer is not ready to fly
   pinMode(LEDPIN, OUTPUT);
   digitalWrite(LEDPIN, HIGH);
-
-
 
   //STARTING SERIAL PORTS
   //USB Serial
@@ -80,6 +90,7 @@ void setup() {
 
   //SD SPI: Change to the correct CS pin
   SD.begin(4);
+  payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
 
   delay(2000);  //give some time for all ports to open connection
 
@@ -88,14 +99,8 @@ void setup() {
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
   // Set the update rate
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);  // 1 Hz update rate
-  // Request updates on antenna status, comment out to keep quiet
-  //GPS.sendCommand(PGCMD_ANTENNA);
-  //Not sure if wait for gps fix function is implemented correctly
-  waitGPSfix();
 
-  delay(500);  //give some time for commands above to run
-
-  //TODO: create functions here that run until RS data is being acquired and GPS has a fix
+  delay(3000);  //give some time for commands above to run
 
   //signal that payload is ready for flight
   //note that this does not mean that the Ground Station is ready
@@ -109,10 +114,14 @@ void loop() {
 
   // 2. Receive Remote Sensor and GPS Data, save to variables
   // Get single char from GPS. Value will be 0, if nothing read.
-  char c = GPS.read();
+  c = GPS.read();
 
   // check if new NMEA sentence is ready
   if (GPS.newNMEAreceived()) {
+    GPS.lastNMEA();
+    // increment gps data counter
+    gps_data_counter++;
+
     // print GPS data to USB Serial, if true
     if (GPS_DEBUG) {
       Serial.print("GPS DATA: ");
@@ -120,113 +129,102 @@ void loop() {
     }
 
     // re-run loop() if GPS line parsing fails
-    if (!GPS.parse(GPS.lastNMEA())) return;
+    if (!GPS.parse(GPS.lastNMEA())) {
+      return;
+    }
+  }
 
-    // may need to do some checks for GPS.fix here
-
-    // increment gps data counter
-    gps_data_counter++;
-
-    //resets all the remote sensor receive counters
-    commaCounter = 1;
-    currentIndexInBuffer = 1;
-    memset(remoteDataBuffer, 0, 40);
-    memset(buffer, 0, 160);
+  commaCounter = 1;
+  currentIndexInBuffer = 1;
+  memset(remoteDataBuffer, 0, 40);
+  memset(buffer, 0, 160);
+  if (XbeeR.available()) {
     remoteDataBuffer[0] = XbeeR.read();
-    delay(100);
+    delay(timer);
     remoteDataBuffer[1] = XbeeR.read();
-    delay(100);
+    delay(timer);
+  }
 
-    if ((remoteDataBuffer[0] == '1' || remoteDataBuffer[0] == '2') && remoteDataBuffer[1] == ',') {
-      remoteDataBuffer[1] = ',';
+  if ((remoteDataBuffer[0] == '1' || remoteDataBuffer[0] == '2') && remoteDataBuffer[1] == ',') {
+    while (commaCounter < 4) {
+      currentIndexInBuffer++;
 
-      while (commaCounter < 5) {
-        currentIndexInBuffer++;
-        remoteDataBuffer[currentIndexInBuffer] = Serial1.read();
-        delay(100);
+      if (XbeeR.available()) {
+        remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
         if (remoteDataBuffer[currentIndexInBuffer] == ',') {
           commaCounter++;
         }
-
-        // Serial.println(remoteDataBuffer);
       }
-      //gets three chars more after the forth comma
-      for (int i = 0; i < 4; i++) {
-        currentIndexInBuffer++;
-        remoteDataBuffer[currentIndexInBuffer] = Serial1.read();
-        delay(100);
-
-        // Serial.println(remoteDataBuffer);
-      }
-
-      // delay(500);
-      // Serial.print("The original array: ");
-      // Serial.println(remoteDataBuffer);
-
-      //parses all the commas
-      *sensNum = strtok(remoteDataBuffer, ",");
-      *pressure = strtok(NULL, ",");
-      *temp = strtok(NULL, ",");
-      *humidity = strtok(NULL, ",");
-      *solarVolt = strtok(NULL, ",");
-
-      if (*sensNum == '1') {
-        rs1_data_counter++;
-      }
-
-      if (*sensNum == '2') {
-        rs2_data_counter++;
-      }
-
-      gpsHour[] = GPS.hour;
-      gpsMin[] = GPS.minute;
-      gpsSec[] = GPS.seconds;
-      gpsMSec[] = GPS.milliseconds;
-      gpsLat[] = GPS.latitude;
-      gpsLong[] = GPS.longitude;
-      gpsSpeed[] = GPS.speed;
-      gpsAngle[] = GPS.angle;
-      gpsAltitude[] = GPS.altitude;
-      gpsSatellites[] = GPS.satellites;
-      gps_data_counter++;
-
-      // 3. Transmitt Data, if ready
-      // get current total data packets, compare with previous total
-      new_data_counter = rs1_data_counter + rs2_data_counter + gps_data_counter;
-      if (new_data_counter > prev_data_counter) transmittAllData();
+      delay(timer);
     }
-  }
 
-  //Transmitts all data using Xbee Radio
-  //may need to check amount of time it takes to run this
-  //if it is high (on the order of milliseconds), may need to find a more effecient method of printing
-  //because this could limit the rate at which we poll the GPS and Radio for new data
-  void transmittAllData() {
+    //gets three chars more after the forth comma
+    for (int i = 0; i < 4; i++) {
+      currentIndexInBuffer++;
+
+      if (XbeeR.available()) {
+        remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
+      }
+
+      delay(timer);
+    }
+
+    //parses all the commas
+    sensNum = strtok(remoteDataBuffer, ",");
+    temp = strtok(NULL, ",");
+    pressure = strtok(NULL, ",");
+    humidity = strtok(NULL, ",");
+    solarVolt = strtok(NULL, ",");
+
+    //converts sensor number from string from string (char arrays) to to int values
+    numSens = atoi(sensNum);
+    //increment rs1/rs2 data counters
+    if (numSens == 1) {
+      rs1_data_counter++;
+    }
+
+    if (numSens == 2) {
+      rs2_data_counter++;
+    }
+
+    // Converts gps data from float to string (character arrays)
+    dtostrf(GPS.hour, 1, 0, gpsHour);
+    dtostrf(GPS.minute, 1, 0, gpsMin);
+    dtostrf(GPS.seconds, 1, 0, gpsSec);
+    dtostrf(GPS.milliseconds, 1, 0, gpsMSec);
+    dtostrf(GPS.latitude, 1, 4, gpsLat);
+    dtostrf(GPS.longitude, 1, 4, gpsLong);
+    dtostrf(GPS.speed, 1, 4, gpsSpeed);
+    dtostrf(GPS.angle, 1, 4, gpsAngle);
+    dtostrf(GPS.altitude, 1, 4, gpsAltitude);
+    dtostrf(GPS.satellites, 1, 0, gpsSatellites);
+
+    //converts remote sensor temp and solar voltage from string (char arrays) to to float values (used for the reasonability checks)
+    numTemp = atof(temp);
+    numSV = atof(solarVolt);
+
+    // 3. Transmit Data, if ready
+    transmitAllData();
+  }
+}
+
+//Transmitts all data using Xbee Radio
+//Transmit time can be adjusted by changing the constant "timer" value
+void transmitAllData() {
+  if (!(numTemp > 40 || numTemp < 0 || numSV > 15 || numSV < 2)) {
     //concatenates the remote sensor and gps data
-    sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
-            rs1_data_counter, rs2_data_counter, gps_data_counter, sensNum, pressure, temp, humidity, solarVolt, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLat, gpsLong, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites);
+    sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt,
+            rs1_data_counter, rs2_data_counter, gps_data_counter);
+    //transmits all the data
     XbeeT.println(buffer);
-
-    //data logging to SD Card, adapter hasn't been acquired yet
-    payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
+    //data logging to SD Card
     payloadDataFile.write(buffer);
-    SD.close("payloadData.txt");
-
-    if (TRANSMITT_DEBUG) {
-      //concatenates the remote sensor and gps data
-      sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
-              rs1_data_counter, rs2_data_counter, gps_data_counter, sensNum, pressure, temp, humidity, solarVolt, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLat, gpsLong, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites);
-      XbeeT.println(buffer);
-    }
   }
 
-  //waits for a GPS fix to be acquired
-  bool waitGPSfix() {
-    while (!GPS.fix) {
-      digitalWrite(LEDPIN, HIGH);
-      XbeeT.println("Waiting for GPS Fix");
-      delay(1000);
-    }
-    XbeeT.println("GPS Fix Successful");
-    return;
+  if (TRANSMITT_DEBUG) {
+    //concatenates the remote sensor and gps data
+    sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%i,%i,%i", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt,
+            rs1_data_counter, rs2_data_counter, gps_data_counter);
+    Serial.println(buffer);
   }
+}
