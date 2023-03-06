@@ -55,11 +55,10 @@ float numSV;
 //alternatively, you could use the debugger
 #define SERIAL_PORT_DEBUG false
 #define GPS_DEBUG false
-#define TRANSMITT_DEBUG true
+#define TRANSMIT_DEBUG true
 
 //FUNCTION HEADERS
-void transmittAllData();
-bool waitGPSfix();
+void transmitAllData();
 
 //Initializing GPS Object using hardware serial port
 Adafruit_GPS GPS(&GPSSerial);
@@ -89,8 +88,8 @@ void setup() {
   if (SERIAL_PORT_DEBUG) Serial.println("GPS Serial begun!");
 
   //SD SPI: Change to the correct CS pin
-  SD.begin(4);
-  payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
+  //SD.begin(4);
+  //payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
 
   delay(2000);  //give some time for all ports to open connection
 
@@ -110,7 +109,7 @@ void setup() {
 
 void loop() {
   // 1. Get total data packets counter
-  int data_counter = rs1_data_counter + rs2_data_counter + gps_data_counter;
+  // int data_counter = rs1_data_counter + rs2_data_counter + gps_data_counter;
 
   // 2. Receive Remote Sensor and GPS Data, save to variables
   // Get single char from GPS. Value will be 0, if nothing read.
@@ -119,8 +118,6 @@ void loop() {
   // check if new NMEA sentence is ready
   if (GPS.newNMEAreceived()) {
     GPS.lastNMEA();
-    // increment gps data counter
-    gps_data_counter++;
 
     // print GPS data to USB Serial, if true
     if (GPS_DEBUG) {
@@ -176,7 +173,7 @@ void loop() {
     humidity = strtok(NULL, ",");
     solarVolt = strtok(NULL, ",");
 
-    //converts sensor number from string from string (char arrays) to to int values
+    //converts sensor number from string (char arrays) to to int values
     numSens = atoi(sensNum);
     //increment rs1/rs2 data counters
     if (numSens == 1) {
@@ -199,6 +196,9 @@ void loop() {
     dtostrf(GPS.altitude, 1, 4, gpsAltitude);
     dtostrf(GPS.satellites, 1, 0, gpsSatellites);
 
+    // increment gps data counter
+    gps_data_counter++;
+
     //converts remote sensor temp and solar voltage from string (char arrays) to to float values (used for the reasonability checks)
     numTemp = atof(temp);
     numSV = atof(solarVolt);
@@ -213,15 +213,15 @@ void loop() {
 void transmitAllData() {
   if (!(numTemp > 40 || numTemp < 0 || numSV > 15 || numSV < 2)) {
     //concatenates the remote sensor and gps data
-    sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt,
+    sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%i,%i,%i", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt,
             rs1_data_counter, rs2_data_counter, gps_data_counter);
     //transmits all the data
     XbeeT.println(buffer);
     //data logging to SD Card
-    payloadDataFile.write(buffer);
+    //payloadDataFile.write(buffer);
   }
 
-  if (TRANSMITT_DEBUG) {
+  if (TRANSMIT_DEBUG) {
     //concatenates the remote sensor and gps data
     sprintf(buffer, "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%i,%i,%i", sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt,
             rs1_data_counter, rs2_data_counter, gps_data_counter);
