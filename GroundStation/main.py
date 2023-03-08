@@ -3,6 +3,16 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter.filedialog import asksaveasfile
 from digi.xbee.devices import XBeeDevice
+import matplotlib
+import numpy
+
+matplotlib.use('TkAgg')
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg,
+    NavigationToolbar2Tk
+)
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -82,6 +92,24 @@ class MyGUI:
         btn14.grid(row = 3, column = 2, sticky = tk.W+tk.E)
 
         graphframe.pack(fill = 'x')
+
+        data = {
+            'Python': 11.27,
+            'C': 11.16,
+            'Java': 10.46,
+            'C++': 7.5,
+            'C#': 5.26
+        }
+        languages = data.keys()
+        popularity = data.values()
+        figure = Figure(figsize=(6, 4), dpi=100)
+        figure_canvas = FigureCanvasTkAgg(figure, self)
+        NavigationToolbar2Tk(figure_canvas, self)
+        axes = figure.add_subplot()
+        axes.bar(languages, popularity)
+        axes.set_title('Top 5 Programming Languages')
+        axes.set_ylabel('Popularity')
+        figure_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
         #main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)

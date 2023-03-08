@@ -38,6 +38,7 @@ char gpsSpeed[10];
 char gpsAngle[10];
 char gpsAltitude[10];
 char gpsSatellites[10];
+File payloadDataFile;
 
 //VARIABLES USED FOR REASONABILITY CHECKS
 float numSens;
@@ -49,6 +50,7 @@ float numSV;
 #define GPSSerial Serial2
 #define XbeeT Serial3
 #define LEDPIN 13
+#define SD_CS_PIN 10
 
 //DEBUG FLAGS
 //set any of these to 'true' for status updates to be sent to the USB Serial Console
@@ -87,9 +89,11 @@ void setup() {
   GPS.begin(9600);
   if (SERIAL_PORT_DEBUG) Serial.println("GPS Serial begun!");
 
-  //SD SPI: Change to the correct CS pin
-  //SD.begin(4);
-  //payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
+  //SD SPI:
+  SD.begin(SD_CS_PIN);
+  payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
+  payloadDataFile.println("Test Flight 1");
+  payloadDataFile.close();
 
   delay(2000);  //give some time for all ports to open connection
 
@@ -218,7 +222,9 @@ void transmitAllData() {
     //transmits all the data
     XbeeT.println(buffer);
     //data logging to SD Card
-    //payloadDataFile.write(buffer);
+    payloadDataFile = SD.open("payloadData.txt", FILE_WRITE);
+    payloadDataFile.println(buffer);
+    payloadDataFile.close();
   }
 
   if (TRANSMIT_DEBUG) {
