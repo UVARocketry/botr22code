@@ -1,34 +1,53 @@
-from digi.xbee.devices import XBeeDevice
+import serial
+import time
+import keyboard
 
-# TODO: Replace with the serial port where your local module is connected to.
-PORT = "COM1"
-# TODO: Replace with the baud rate of your local module.
-BAUD_RATE = 9600
+ser = serial.Serial(port = "COM12", baudrate = 9600)
 
+while True:
+    buffer = ser.readline().decode()
+    print(buffer)
 
-def main():
-    print(" +-----------------------------------------+")
-    print(" | XBee Python Library Receive Data Sample |")
-    print(" +-----------------------------------------+\n")
+    tempBuffer = buffer.split(',')
+    sensNum = tempBuffer[0]
+    gpsHour =  tempBuffer[1]
+    gpsMin =  tempBuffer[2]
+    gpsSec =  tempBuffer[3]
+    gpsMSec =  tempBuffer[4]
+    gpsLong =  tempBuffer[5]
+    gpsLat = tempBuffer[6]
+    gpsSpeed = tempBuffer[7]
+    gpsAngle = tempBuffer[8]
+    gpsAltitude = tempBuffer[9]
+    gpsSatellites = tempBuffer[10]
+    temp = tempBuffer[11]
+    pressure = tempBuffer [12]
+    humidity = tempBuffer[13]
+    solarVolt = tempBuffer[14]
+    rs1_data_counter = tempBuffer[15]
+    rs2_data_counter = tempBuffer[16]
+    gps_data_counter = tempBuffer[17]
 
-    device = XBeeDevice(PORT, BAUD_RATE)
+    # if sensNum == "1":
+    #     print("Sensor One Data Received")
+    #     tempOne = temp;
+    #     pressureOne = pressure;
+    #     humidityOne = humidity;
+    #     solarVoltOne = solarVolt;
+    # if sensNum == "2":
+    #     print("Sensor Two Data Received")
+    #     tempTwo = temp;
+    #     pressureTwo = pressure;
+    #     humidityTwo = humidity;
+    #     solarVoltTwo = solarVolt;
+    
+    print("sensNum: %s, gpsHour: %s, gpsMin: %s, gpsSec: %s, gpsMSec: %s, gpsLong: %s, gpsLat: %s, gpsSpeed: %s, gpsAngle: %s, gpsAltitude: %s, gpsSatellites: %s, temp: %s, pressure: %s, humidity: %s, solarVolt: %s, rs1_data_counter: %s, rs2_data_counter: %s, gps_data_counter: %s" 
+    % (sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, temp, pressure, humidity, solarVolt, rs1_data_counter, rs2_data_counter, gps_data_counter))
 
-    try:
-        device.open()
+    time.sleep(1)
 
-        def data_receive_callback(xbee_message):
-            print("From %s >> %s" % (xbee_message.remote_device.get_64bit_addr(),
-                                     xbee_message.data.decode()))
+    if(keyboard.is_pressed('q')):
+        print("User needs to quit")
+        break
 
-        device.add_data_received_callback(data_receive_callback)
-
-        print("Waiting for data...\n")
-        input()
-
-    finally:
-        if device is not None and device.is_open():
-            device.close()
-
-
-if __name__ == '__main__':
-    main()
+ser.close()
