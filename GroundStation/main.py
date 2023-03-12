@@ -74,6 +74,7 @@ class MyGUI:
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
             self.root.destroy()
+            #ser.close();
    
 MyGUI()     
     
