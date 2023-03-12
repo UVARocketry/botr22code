@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog
 from tkinter.filedialog import asksaveasfile
-from digi.xbee.devices import XBeeDevice
 
 class MyGUI:
     #Main Method (Calls itself)
