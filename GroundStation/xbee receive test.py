@@ -2,7 +2,7 @@ import serial
 import time
 import keyboard
 
-ser = serial.Serial(port = "COM12", baudrate = 9600)
+ser = serial.Serial(port = "COM3", baudrate = 9600)
 
 while True:
     buffer = ser.readline().decode()
