@@ -6,21 +6,6 @@ from tkinter.filedialog import asksaveasfile
 class MyGUI:
     #Main Method (Calls itself)
     def __init__(self):
-        #Xbee Portion of Program (Receives the data and sets it to variables, change com port and baud rate as needed in XCTU)
-        #Helpful links: https://xbplib.readthedocs.io/en/latest/user_doc/communicating_with_xbee_devices.html
-        #https://github.com/digidotcom/xbee-python/tree/master/examples/communication/ReceiveDataSample
-        #Instantiate xbee radio node
-        '''xbee = XBeeDevice("COM1", 9600)
-        xbee.open()
-        #Xbee Callback method that listens for xbee devices and when data is received, save the data as variables
-        def data_receive_callback(xbee_message):
-            address = xbee_message.remote_device.get_64bit_addr()
-            data = xbee_message.data.decode("utf8")
-            sensnum, pressure, temp, humidity, solvolt, gpstime, gpslat, gpslong, gpsspeed, gpsalt, gpsangle, gpsfix, gpssat = data
-            print("Received data from %s: %s" % (address, data))
-        #Adds the callback
-        xbee.add_data_received_callback(data_receive_callback)'''
-
         #Tkinter Portion of Program
         self.root = tk.Tk()
 
