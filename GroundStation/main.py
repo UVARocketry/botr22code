@@ -3,6 +3,10 @@ import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.figure import Figure
+import matplotlib.animation as animation
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
@@ -71,7 +75,8 @@ class MyGUI:
 
         figure1 = LivePlotGroundSensor1.returnGraphG1()
         graph1 = FigureCanvasTkAgg(figure1, anotherFrame)
-        graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, stickky = tk.W+tk.E)
+        # graph1.show()
+        graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
 
         # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
         # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
