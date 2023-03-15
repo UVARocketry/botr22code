@@ -18,10 +18,10 @@ gpsSec = ""
 gpsMSec = ""
 gpsLong = ""
 gpsLat = ""
-gpsSpeed = ""
-gpsAngle = ""
-gpsAltitude = ""
-gpsSatellites = ""
+gpsSpeed = "200"
+gpsAngle = "30"
+gpsAltitude = "400"
+gpsSatellites = "7"
 tempOne = ""
 pressureOne = ""
 humidityOne = ""
@@ -30,6 +30,7 @@ tempTwo = ""
 pressureTwo = ""
 humidityTwo = ""
 solarVoltTwo = ""
+currentApogee = "500"
 
 #State Estimation
 currentState = 0;
@@ -68,29 +69,30 @@ class MyGUI:
         graphframe.columnconfigure(10, weight = 1)
         graphframe.columnconfigure(11, weight = 1)
 
+        #background="#99fb99"
         space1 = tk.Label(graphframe, text = "State:", font = defaultfont)
         space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        space2 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space2 = tk.Label(graphframe, text = currentState, background="#99fb99", font = defaultfont)
         space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
         space3 = tk.Label(graphframe, text = "Altitude:", font = defaultfont)
         space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        space4 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space4 = tk.Label(graphframe, text = gpsAltitude, background="#99fb99", font = defaultfont)
         space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
         space5 = tk.Label(graphframe, text = "Apogee", font = defaultfont)
         space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        space6 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space6 = tk.Label(graphframe, text = currentApogee, background="#99fb99", font = defaultfont)
         space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
         space7 = tk.Label(graphframe, text = "Velocity:", font = defaultfont)
         space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        space8 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space8 = tk.Label(graphframe, text = gpsSpeed, background="#99fb99", font = defaultfont)
         space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
         space9 = tk.Label(graphframe, text = "Angle:", font = defaultfont)
         space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        space10 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space10 = tk.Label(graphframe, text = gpsAngle, background="#99fb99", font = defaultfont)
         space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
         space11 = tk.Label(graphframe, text = "Satellites:", font = defaultfont)
         space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        space12 = tk.Frame(graphframe, background="#99fb99", height=60)
+        space12 = tk.Label(graphframe, text = gpsSatellites, background="#99fb99", font = defaultfont)
         space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
         graphframe.pack(fill = 'x')
@@ -113,9 +115,6 @@ class MyGUI:
         btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
 
         anotherFrame.pack(fill = 'x')
-
-        button = ttk.Button(self.root, text = "CLICK ME!")
-        button.pack(fill = 'x')
         
         #light/dark mode
         sv_ttk.set_theme("light")
@@ -161,6 +160,7 @@ class MyGUI:
             humidityTwo = tempBuffer[13]
             solarVoltTwo = tempBuffer[14]
 
+        
         rs1_data_counter = tempBuffer[15]
         rs2_data_counter = tempBuffer[16]
         gps_data_counter = tempBuffer[17]
@@ -172,7 +172,11 @@ class MyGUI:
         # if sensNum == "2":
         #print("sensNum: %s, gpsHour: %s, gpsMin: %s, gpsSec: %s, gpsMSec: %s, gpsLong: %s, gpsLat: %s, gpsSpeed: %s, gpsAngle: %s, gpsAltitude: %s, gpsSatellites: %s, temp: %s, pressure: %s, humidity: %s, solarVolt: %s, rs1_data_counter: %s, rs2_data_counter: %s, gps_data_counter: %s" 
         #% (sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, tempTwo, pressureTwo, humidityTwo, solarVoltTwo, rs1_data_counter, rs2_data_counter, gps_data_counter))
-
+        
+        #Update current apogee if necessary
+        if(gpsAltitude > currentApogee):
+            currentApogee = gpsAltitude
+        
         #Change parameters as necessary
         if gpsLong == 0 and sensNum == 0:
             #Current State = 0
