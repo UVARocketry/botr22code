@@ -1,9 +1,12 @@
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
+
+import LivePlotGroundSensor1
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -12,7 +15,7 @@ class MyGUI:
         self.root = tk.Tk()
 
         #Default visual variables that can be changed
-        self.root.geometry("500x500")
+        self.root.geometry("5000x5000")
         self.root.title("UVA BOTR Ground Station V0.1")
         defaultfont = ('Arial', 18)
 
@@ -66,18 +69,21 @@ class MyGUI:
         anotherFrame.columnconfigure(0, weight = 1)
         anotherFrame.columnconfigure(1, weight = 1)
 
+        figure1 = LivePlotGroundSensor1.returnGraphG1()
+        graph1 = FigureCanvasTkAgg(figure1, anotherFrame)
+        graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, stickky = tk.W+tk.E)
 
-        btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
-        btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+        # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
+        # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
 
-        btn10 = tk.Button(anotherFrame, text = "2", font = defaultfont)
-        btn10.grid(row = 1, column = 1, sticky = tk.W+tk.E)
+        # btn10 = tk.Button(anotherFrame, text = "2", font = defaultfont)
+        # btn10.grid(row = 1, column = 1, sticky = tk.W+tk.E)
 
-        btn11 = tk.Button(anotherFrame, text = "3", font = defaultfont)
-        btn11.grid(row = 2, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+        # btn11 = tk.Button(anotherFrame, text = "3", font = defaultfont)
+        # btn11.grid(row = 2, column = 0, columnspan = 1, sticky = tk.W+tk.E)
 
-        btn12 = tk.Button(anotherFrame, text = "4", font = defaultfont)
-        btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
+        # btn12 = tk.Button(anotherFrame, text = "4", font = defaultfont)
+        # btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
 
         anotherFrame.pack(fill = 'x')
 
@@ -98,6 +104,3 @@ class MyGUI:
             #ser.close();
    
 MyGUI()     
-    
-
-    

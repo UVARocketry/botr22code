@@ -35,4 +35,6 @@ def animate(i):
 
 ani = FuncAnimation(plt.gcf(), animate, frames=None, cache_frame_data=False, interval=1000)
 
-plt.show()
+def returnGraphG1():
+    return plt.figure()
+# plt.show()
