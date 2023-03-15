@@ -49,7 +49,7 @@ float numSV;
 #define XbeeR Serial1
 #define GPSSerial Serial2
 #define XbeeT Serial3
-#define LEDPIN 13
+#define LEDPIN 22
 #define SD_CS_PIN 10
 
 //DEBUG FLAGS
