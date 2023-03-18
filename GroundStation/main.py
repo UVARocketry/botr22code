@@ -18,7 +18,7 @@ import pandas as pd
 #from tkinter.filedialog import asksaveasfile
 
 import LivePlotGroundSensor1
-# import LivePlotGroundSensor2
+import LivePlotGroundSensor2
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -27,70 +27,74 @@ class MyGUI:
         self.root = tk.Tk()
 
         #Default visual variables that can be changed
-        self.root.geometry("5000x5000")
+        self.root.geometry("2500x2500")
         self.root.title("UVA BOTR Ground Station V0.1")
-        defaultfont = ('Arial', 18)
-
+        self.defaultfont = ('Arial', 18)
+        
         #Main label for top of program, change for every flight test
-        self.label = tk.Label(self.root, text = "BOTR Flight Test", font = defaultfont)
+        self.label = tk.Label(self.root, text = "BOTR Flight Test", font = self.defaultfont)
         self.label.pack(padx=10, pady=10)
 
         #graph frame for the four matplotlib graphs
-        graphframe = tk.Frame(self.root)
-        graphframe.columnconfigure(0, weight = 1)
-        graphframe.columnconfigure(1, weight = 1)
-        graphframe.columnconfigure(2, weight = 1)
-        graphframe.columnconfigure(3, weight = 1)
-        graphframe.columnconfigure(4, weight = 1)
-        graphframe.columnconfigure(5, weight = 1)
-        graphframe.columnconfigure(6, weight = 1)
-        graphframe.columnconfigure(7, weight = 1)
-        graphframe.columnconfigure(8, weight = 1)
-        graphframe.columnconfigure(9, weight = 1)
-        graphframe.columnconfigure(10, weight = 1)
-        graphframe.columnconfigure(11, weight = 1)
+        self.graphframe = tk.Frame(self.root)
+        self.graphframe.columnconfigure(0, weight = 1)
+        self.graphframe.columnconfigure(1, weight = 1)
+        self.graphframe.columnconfigure(2, weight = 1)
+        self.graphframe.columnconfigure(3, weight = 1)
+        self.graphframe.columnconfigure(4, weight = 1)
+        self.graphframe.columnconfigure(5, weight = 1)
+        self.graphframe.columnconfigure(6, weight = 1)
+        self.graphframe.columnconfigure(7, weight = 1)
+        self.graphframe.columnconfigure(8, weight = 1)
+        self.graphframe.columnconfigure(9, weight = 1)
+        self.graphframe.columnconfigure(10, weight = 1)
+        self.graphframe.columnconfigure(11, weight = 1)
 
-        space1 = tk.Label(graphframe, text = "State:", font = defaultfont)
-        space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        space2 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
-        space3 = tk.Label(graphframe, text = "Altitude:", font = defaultfont)
-        space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        space4 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
-        space5 = tk.Label(graphframe, text = "Apogee", font = defaultfont)
-        space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        space6 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
-        space7 = tk.Label(graphframe, text = "Velocity:", font = defaultfont)
-        space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        space8 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
-        space9 = tk.Label(graphframe, text = "Angle:", font = defaultfont)
-        space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        space10 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
-        space11 = tk.Label(graphframe, text = "Satellites:", font = defaultfont)
-        space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        space12 = tk.Frame(graphframe, background="#99fb99", height=60)
-        space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
+        self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
+        self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
+        self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
+        self.space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
+        self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
+        self.space4 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
+        self.space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
+        self.space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
+        self.space6 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
+        self.space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
+        self.space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
+        self.space8 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
+        self.space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
+        self.space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
+        self.space10 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
+        self.space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
+        self.space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
+        self.space12 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
-        graphframe.pack(fill = 'x')
+        self.graphframe.pack(fill = 'x')
+        
+        self.anotherFrame = tk.Frame(self.root)
+        self.anotherFrame.columnconfigure(0, weight = 1)
+        self.anotherFrame.columnconfigure(1, weight = 1)
+        
+        self.button = ttk.Button(self.root, text = "CLICK ME!")
+        self.button.pack(fill = 'x')
+        
+        #light/dark mode
+        sv_ttk.set_theme("dark")
+        
+        self.g1 = LivePlotGroundSensor1.GroundSensorOne()
+        self.g2 = LivePlotGroundSensor2.GroundSensorTwo()
 
-        anotherFrame = tk.Frame(self.root)
-        anotherFrame.columnconfigure(0, weight = 1)
-        anotherFrame.columnconfigure(1, weight = 1)
-
-        pltInMain = LivePlotGroundSensor1.returnPlt()
-        ani = FuncAnimation(pltInMain.gcf(), LivePlotGroundSensor1.animate, frames=None, cache_frame_data=False, interval=1000)
-
-        figure1 = pltInMain.gcf()
-        graph1 = FigureCanvasTkAgg(figure1, anotherFrame)
-        graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-
-        # figure2 = LivePlotGroundSensor2.returnGraphG2()
-        # graph2 = FigureCanvasTkAgg(figure2, anotherFrame)
-        # graph2.get_tk_widget().grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+    def setUpGraph1(self):
+        self.figure1 = self.g1.returnGraphG1()
+        self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
+        self.graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+        self.g1.animation()
 
         # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
         # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -104,14 +108,20 @@ class MyGUI:
         # btn12 = tk.Button(anotherFrame, text = "4", font = defaultfont)
         # btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
 
-        anotherFrame.pack(fill = 'x')
-
-        button = ttk.Button(self.root, text = "CLICK ME!")
-        button.pack(fill = 'x')
+        self.anotherFrame.pack(fill = 'x')
         
-        #light/dark mode
-        sv_ttk.set_theme("dark")
-
+    def setUpGraph2(self):
+        self.figure2 = self.g2.returnGraphG2()
+        self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
+        self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+        self.g2.animation()
+        
+        self.anotherFrame.pack(fill = 'x')
+        
+    def mainLoop(self):
+        # self.setUpGraph1()
+        # self.setUpGraph2()
+        
         #main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.root.mainloop()
@@ -122,4 +132,7 @@ class MyGUI:
             self.root.destroy()
             #ser.close();
    
-MyGUI()     
+gui = MyGUI()
+gui.setUpGraph1()
+gui.setUpGraph2()
+gui.mainLoop()  

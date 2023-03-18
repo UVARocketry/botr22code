@@ -25,6 +25,7 @@ class GroundSensorOne:
             self.humidityOneList.append(random.randint(4, 9)) 
             self.solarVoltOneList.append(random.randint(5, 10)) 
             
+            # Why does this need to be in the animate function???
             plt.cla()
             plt.plot(self.gpsSecList, self.pressureOneList, label='Pressure[*10kPa]')
             plt.plot(self.gpsSecList, self.tempOneList, label='Temp[C]')
@@ -41,10 +42,9 @@ class GroundSensorOne:
         return plt.gcf()
     
     def showGraph1(self):
-        
         plt.show()
         
-g1 = GroundSensorOne()
-g1.animation()
-g1.showGraph1()
+# g1 = GroundSensorOne()
+# g1.animation()
+# g1.showGraph1()
 # plt.show()
