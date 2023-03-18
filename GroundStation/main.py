@@ -3,14 +3,22 @@ import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
+
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+import random
+from itertools import count
+import pandas as pd
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
 import LivePlotGroundSensor1
+# import LivePlotGroundSensor2
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -73,10 +81,16 @@ class MyGUI:
         anotherFrame.columnconfigure(0, weight = 1)
         anotherFrame.columnconfigure(1, weight = 1)
 
-        figure1 = LivePlotGroundSensor1.returnGraphG1()
+        pltInMain = LivePlotGroundSensor1.returnPlt()
+        ani = FuncAnimation(pltInMain.gcf(), LivePlotGroundSensor1.animate, frames=None, cache_frame_data=False, interval=1000)
+
+        figure1 = pltInMain.gcf()
         graph1 = FigureCanvasTkAgg(figure1, anotherFrame)
-        # graph1.show()
         graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+
+        # figure2 = LivePlotGroundSensor2.returnGraphG2()
+        # graph2 = FigureCanvasTkAgg(figure2, anotherFrame)
+        # graph2.get_tk_widget().grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
 
         # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
         # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -96,7 +110,7 @@ class MyGUI:
         button.pack(fill = 'x')
         
         #light/dark mode
-        sv_ttk.set_theme("light")
+        sv_ttk.set_theme("dark")
 
         #main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
