@@ -17,8 +17,10 @@ import pandas as pd
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
-import LivePlotGroundSensor1
-import LivePlotGroundSensor2
+# import LivePlotGroundSensor1
+# import LivePlotGroundSensor2
+
+import CombinedGroundSensors
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -86,15 +88,23 @@ class MyGUI:
         
         #light/dark mode
         sv_ttk.set_theme("dark")
-        
-        self.g1 = LivePlotGroundSensor1.GroundSensorOne()
-        self.g2 = LivePlotGroundSensor2.GroundSensorTwo()
 
-    def setUpGraph1(self):
-        self.figure1 = self.g1.returnGraphG1()
+    def setUpGraphs(self):
+        self.groundSensors = CombinedGroundSensors.GroundSensors()
+        
+        self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-        self.g1.animation()
+        self.anotherFrame.pack(fill = 'x')
+        
+        self.groundSensors.animation(True)
+        
+        self.figure2 = self.groundSensors.returnGraphG2()
+        self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
+        self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+        self.groundSensors.animation(False)
+        
+        self.anotherFrame.pack(fill = 'x')
 
         # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
         # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -107,20 +117,9 @@ class MyGUI:
 
         # btn12 = tk.Button(anotherFrame, text = "4", font = defaultfont)
         # btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
-
-        self.anotherFrame.pack(fill = 'x')
-        
-    def setUpGraph2(self):
-        self.figure2 = self.g2.returnGraphG2()
-        self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
-        self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
-        self.g2.animation()
-        
-        self.anotherFrame.pack(fill = 'x')
         
     def mainLoop(self):
-        # self.setUpGraph1()
-        # self.setUpGraph2()
+        self.setUpGraphs()
         
         #main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -133,6 +132,4 @@ class MyGUI:
             #ser.close();
    
 gui = MyGUI()
-gui.setUpGraph1()
-gui.setUpGraph2()
 gui.mainLoop()  
