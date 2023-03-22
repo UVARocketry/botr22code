@@ -1,79 +1,75 @@
 import random
 from itertools import count
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib import style
 
-def animate(i, gps, pressure, temp, humidity, solar, index, plt):
-    # make sure to do next(self.index1 or self.index2) before calling this
+print("hello!!!")
+
+def animate(i, gps, data, lines, ax):
     gps.append(next(index))
-    pressure.append(random.randint(9, 11))
-    temp.append(random.randint(15, 25))
-    humidity.append(random.randint(4, 9))
-    solar.append(random.randint(5, 10))
-
-    plt.cla()
-    plt.plot(gps, pressure,
-             label='Pressure[*10kPa]')
-    plt.plot(gps, temp, label='Temp[C]')
-    plt.plot(gps, humidity, label='Humidity[:10%]')
-    plt.plot(gps, solar, label='Solar Voltage[V]')
-    plt.xlabel('Time')
-    plt.legend(loc='upper left')
-    plt.title('Remote Sensor One')
-    plt.tight_layout()
-
-    # self.gpsSecListTwo.append(next(self.indexTwo))
-    # self.pressureTwoList.append(random.randint(9, 11))
-    # self.tempTwoList.append(random.randint(15, 25))
-    # self.humidityTwoList.append(random.randint(4, 9))
-    # self.solarVoltTwoList.append(random.randint(5, 10))
-
-    # self.plt2.cla()
-    # self.plt2.plot(self.gpsSecListTwo, self.pressureTwoList, label='Pressure[*10kPa]')
-    # self.plt2.plot(self.gpsSecListTwo, self.tempTwoList, label='Temp[C]')
-    # self.plt2.plot(self.gpsSecListTwo, self.humidityTwoList, label='Humidity[:10%]')
-    # self.plt2.plot(self.gpsSecListTwo, self.solarVoltTwoList, label='Solar Voltage[V]')
-    # self.plt2.xlabel('Time')
-    # self.plt2.legend(loc='upper left')
-    # self.plt2.title('Remote Sensor Two')
-    # self.plt2.tight_layout()
+    
+    print("how many damn times is this running")
+    
+    data[0].append(random.randint(9, 11))
+    data[1].append(random.randint(15, 25))
+    data[2].append(random.randint(4, 9))
+    data[3].append(random.randint(5, 10))
+    
+    for j in range(4):
+        lines[j].set_data(gps, data[j])
+        ax.relim()
+        ax.autoscale_view()
 
 class GroundSensors:
     def __init__(self):
         self.plt1 = plt
         self.plt2 = plt
         
-        self.plt1.style.use('fivethirtyeight')
-        self.plt2.style.use('fivethirtyeight')
+        style.use('fivethirtyeight')
+        
+        self.fig1, self.axl1 = self.plt1.subplots()
+        self.axl1.set_ylim(ymin = 0, ymax = 30)
+        self.axl1.set_title("Remote Sensor One")
+        self.axl1.set_xlabel("Time")
+        self.axl1.grid(True)
+        
+        self.fig2, self.axl2 = self.plt2.subplots()
+        self.axl2.set_ylim(ymin = 0, ymax = 30)
+        self.axl2.set_title("Remote Sensor Two")
+        self.axl2.set_xlabel("Time")
+        self.axl2.grid(True)
         
         self.gpsSecListOne = []
-        # data from remote sensor 1
-        self.pressureOneList = [] # should be divided by 10000 from rawdata, likely 9-11
-        self.tempOneList = [] # likely 15-25
-        self.humidityOneList = [] # multiply by 10 from rawdata, likely 4-9
-        self.solarVoltOneList = [] # likely 5-10
         self.indexOne = count()
+        # data from remote sensor 1
+        # pressure, temp, humidity, solar voltage
+        self.g1Data = [[], [], [], []]
+        self.g1DataLines = []
+        for j in range(4):
+            self.g1DataLines.append(self.axl1.plot([],[])[0])
+            
+        self.axl1.legend()
         
         self.gpsSecListTwo = []
-        # data from remote sensor 2
-        self.pressureTwoList = []
-        self.tempTwoList = []
-        self.humidityTwoList = []
-        self.solarVoltTwoList = []
         self.indexTwo = count()
-        
-    # def animation(self):
-    #     self.aniOne = FuncAnimation(self.plt1.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.pressureOneList, self.tempOneList, self.humidityOneList, self.solarVoltOneList, self.indexOne, self.plt1))
-        
-    #     self.aniTwo = FuncAnimation(self.plt2.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.pressureTwoList, self .tempTwoList, self.humidityTwoList, self.solarVoltTwoList, self.indexTwo, self.plt2))   
+        # data from remote sensor 2
+        # pressure, temp, humidity, solar voltage
+        self.g2Data = [[], [], [], []]
+        self.g2DataLines = []
+        for j in range(4):
+            self.g2DataLines.append(self.axl2.plot([],[])[0], label='testlabel2')
+            
+        self.axl2.legend()
         
     def returnGraphG1(self):
-        self.aniOne = FuncAnimation(self.plt1.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.pressureOneList, self.tempOneList, self.humidityOneList, self.solarVoltOneList, self.indexOne, self.plt1))
+        self.aniOne = FuncAnimation(self.fig1, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1))
         
-        return self.plt1.gcf()
+        return self.fig1
 
     def returnGraphG2(self):
-        self.aniTwo = FuncAnimation(self.plt2.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.pressureTwoList, self .tempTwoList, self.humidityTwoList, self.solarVoltTwoList, self.indexTwo, self.plt2))   
+        self.aniTwo = FuncAnimation(self.fig2, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2))   
         
-        return self.plt2.gcf()
+        return self.fig2
