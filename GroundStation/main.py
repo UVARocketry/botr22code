@@ -88,21 +88,24 @@ class MyGUI:
         
         #light/dark mode
         sv_ttk.set_theme("dark")
+        
+        self.groundSensors = CombinedGroundSensors.GroundSensors()
 
     def setUpGraphs(self):
-        self.groundSensors = CombinedGroundSensors.GroundSensors()
+        
+        
+        # self.groundSensors.animation()
         
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
         self.anotherFrame.pack(fill = 'x')
         
-        self.groundSensors.animation(True)
-        
         self.figure2 = self.groundSensors.returnGraphG2()
         self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
-        self.groundSensors.animation(False)
+        
+        # self.groundSensors.animation()
         
         self.anotherFrame.pack(fill = 'x')
 

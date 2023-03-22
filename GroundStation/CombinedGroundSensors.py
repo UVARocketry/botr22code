@@ -4,6 +4,41 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+def animate(i, gps, pressure, temp, humidity, solar, index, plt):
+    # make sure to do next(self.index1 or self.index2) before calling this
+    gps.append(next(index))
+    pressure.append(random.randint(9, 11))
+    temp.append(random.randint(15, 25))
+    humidity.append(random.randint(4, 9))
+    solar.append(random.randint(5, 10))
+
+    plt.cla()
+    plt.plot(gps, pressure,
+             label='Pressure[*10kPa]')
+    plt.plot(gps, temp, label='Temp[C]')
+    plt.plot(gps, humidity, label='Humidity[:10%]')
+    plt.plot(gps, solar, label='Solar Voltage[V]')
+    plt.xlabel('Time')
+    plt.legend(loc='upper left')
+    plt.title('Remote Sensor One')
+    plt.tight_layout()
+
+    # self.gpsSecListTwo.append(next(self.indexTwo))
+    # self.pressureTwoList.append(random.randint(9, 11))
+    # self.tempTwoList.append(random.randint(15, 25))
+    # self.humidityTwoList.append(random.randint(4, 9))
+    # self.solarVoltTwoList.append(random.randint(5, 10))
+
+    # self.plt2.cla()
+    # self.plt2.plot(self.gpsSecListTwo, self.pressureTwoList, label='Pressure[*10kPa]')
+    # self.plt2.plot(self.gpsSecListTwo, self.tempTwoList, label='Temp[C]')
+    # self.plt2.plot(self.gpsSecListTwo, self.humidityTwoList, label='Humidity[:10%]')
+    # self.plt2.plot(self.gpsSecListTwo, self.solarVoltTwoList, label='Solar Voltage[V]')
+    # self.plt2.xlabel('Time')
+    # self.plt2.legend(loc='upper left')
+    # self.plt2.title('Remote Sensor Two')
+    # self.plt2.tight_layout()
+
 class GroundSensors:
     def __init__(self):
         self.plt1 = plt
@@ -28,47 +63,17 @@ class GroundSensors:
         self.solarVoltTwoList = []
         self.indexTwo = count()
         
-    def animation(self, isGraphOne):
-        def animate(i):
-            if (isGraphOne):
-                self.gpsSecListOne.append(next(self.indexOne))
-                self.pressureOneList.append(random.randint(9, 11))
-                self.tempOneList.append(random.randint(15, 25))
-                self.humidityOneList.append(random.randint(4, 9)) 
-                self.solarVoltOneList.append(random.randint(5, 10))
-                
-                self.plt1.cla()
-                self.plt1.plot(self.gpsSecListOne, self.pressureOneList, label='Pressure[*10kPa]')
-                self.plt1.plot(self.gpsSecListOne, self.tempOneList, label='Temp[C]')
-                self.plt1.plot(self.gpsSecListOne, self.humidityOneList, label='Humidity[:10%]')
-                self.plt1.plot(self.gpsSecListOne, self.solarVoltOneList, label='Solar Voltage[V]')
-                self.plt1.xlabel('Time')
-                self.plt1.legend(loc='upper left')
-                self.plt1.title('Remote Sensor One')
-                self.plt1.tight_layout() 
-            else:
-                self.gpsSecListTwo.append(next(self.indexTwo))
-                self.pressureTwoList.append(random.randint(9, 11))
-                self.tempTwoList.append(random.randint(15, 25))
-                self.humidityTwoList.append(random.randint(4, 9)) 
-                self.solarVoltTwoList.append(random.randint(5, 10))
-                
-                self.plt2.cla()
-                self.plt2.plot(self.gpsSecListTwo, self.pressureTwoList, label='Pressure[*10kPa]')
-                self.plt2.plot(self.gpsSecListTwo, self.tempTwoList, label='Temp[C]')
-                self.plt2.plot(self.gpsSecListTwo, self.humidityTwoList, label='Humidity[:10%]')
-                self.plt2.plot(self.gpsSecListTwo, self.solarVoltTwoList, label='Solar Voltage[V]')
-                self.plt2.xlabel('Time')
-                self.plt2.legend(loc='upper left')
-                self.plt2.title('Remote Sensor Two')
-                self.plt2.tight_layout()
-        if (isGraphOne):
-            self.aniOne = FuncAnimation(self.plt1.gcf(), animate, frames=None, cache_frame_data=False, interval=1000)
-        else:
-            self.aniTwo = FuncAnimation(self.plt2.gcf(), animate, frames=None, cache_frame_data=False, interval=1000)
+    # def animation(self):
+    #     self.aniOne = FuncAnimation(self.plt1.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.pressureOneList, self.tempOneList, self.humidityOneList, self.solarVoltOneList, self.indexOne, self.plt1))
+        
+    #     self.aniTwo = FuncAnimation(self.plt2.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.pressureTwoList, self .tempTwoList, self.humidityTwoList, self.solarVoltTwoList, self.indexTwo, self.plt2))   
         
     def returnGraphG1(self):
+        self.aniOne = FuncAnimation(self.plt1.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.pressureOneList, self.tempOneList, self.humidityOneList, self.solarVoltOneList, self.indexOne, self.plt1))
+        
         return self.plt1.gcf()
 
     def returnGraphG2(self):
+        self.aniTwo = FuncAnimation(self.plt2.gcf(), animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.pressureTwoList, self .tempTwoList, self.humidityTwoList, self.solarVoltTwoList, self.indexTwo, self.plt2))   
+        
         return self.plt2.gcf()
