@@ -29,7 +29,7 @@ stateReadyForFlight = 1;
 stateInFlight = 2;
 
 
-ser = serial.Serial(port = "COM3", baudrate = 9600)
+ser = serial.Serial(port = "COM12", baudrate = 9600)
 
 while True:
 
@@ -78,7 +78,8 @@ while True:
     if gpsLong == 0 and sensNum == 0:
         #Current State = 0
         currentState = stateNotReadyForFlight
-    elif gpsLong != 0 and sensNum != 0 and gpsSpeed < 10:
+    if gpsLong != 0 and sensNum != 0: 
+        #and gpsSpeed < 10
         #Current State = 1
         currentState = stateReadyForFlight
     else:

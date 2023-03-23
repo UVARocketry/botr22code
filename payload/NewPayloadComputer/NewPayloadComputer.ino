@@ -49,7 +49,7 @@ float numSV;
 #define XbeeR Serial1
 #define GPSSerial Serial2
 #define XbeeT Serial3
-#define LEDPIN 22
+#define LEDPIN 23
 #define SD_CS_PIN 10
 
 //DEBUG FLAGS
@@ -118,7 +118,6 @@ void loop() {
   // 2. Receive Remote Sensor and GPS Data, save to variables
   // Get single char from GPS. Value will be 0, if nothing read.
   c = GPS.read();
-
   // check if new NMEA sentence is ready
   if (GPS.newNMEAreceived()) {
     GPS.lastNMEA();
@@ -209,6 +208,8 @@ void loop() {
 
     // 3. Transmit Data, if ready
     transmitAllData();
+    digitalWrite(LEDPIN, HIGH);
+    delay(100);
   }
 }
 
