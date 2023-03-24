@@ -110,8 +110,8 @@ class MyGUI:
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
+            ser.close()
             self.root.destroy()
-            #ser.close();
 
 gui = MyGUI()
 gui.mainLoop()  

@@ -29,7 +29,6 @@ class GroundSensors:
         
         self.gpsTimeList = []
         
-        self.indexOne = count()
         # data from remote sensor 1
         # temp, pressure, humidity, solar voltage
         self.g1Data = [[], [], [], []]
@@ -39,7 +38,6 @@ class GroundSensors:
             
         # self.axl1.legend()
 
-        self.indexTwo = count()
         # data from remote sensor 2
         # temp, pressure, humidity, solar voltage
         self.g2Data = [[], [], [], []]
@@ -50,7 +48,7 @@ class GroundSensors:
         # self.axl2.legend()
     
     # Appends the data onto the lines
-    def animate(self, i, gps, data, lines, ax, index):
+    def animate(self, i, gps, data, lines, ax):
         gps.append(xbee.returnGPSTime())
         
         data[0].append(xbee.returnSensData[0])
@@ -70,9 +68,9 @@ class GroundSensors:
         
         if self.state == 1 | self.state == 2:
             if self.sensNumber == 1:
-                self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
+                self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g1Data, self.g1DataLines, self.axl1))
             elif self.sensNumber == 2:
-                self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
+                self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g2Data, self.g2DataLines, self.axl2))
         
     def returnGraphG1(self):
         return self.fig1
