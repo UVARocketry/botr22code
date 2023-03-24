@@ -160,7 +160,6 @@ class MyGUI:
             humidityTwo = tempBuffer[13]
             solarVoltTwo = tempBuffer[14]
 
-        
         rs1_data_counter = tempBuffer[15]
         rs2_data_counter = tempBuffer[16]
         gps_data_counter = tempBuffer[17]
@@ -174,18 +173,18 @@ class MyGUI:
         #% (sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, tempTwo, pressureTwo, humidityTwo, solarVoltTwo, rs1_data_counter, rs2_data_counter, gps_data_counter))
         
         #Update current apogee if necessary
-        if(gpsAltitude > currentApogee):
-            currentApogee = gpsAltitude
+    if(gpsAltitude > currentApogee):
+        currentApogee = gpsAltitude
         
-        #Change parameters as necessary
-        if gpsLong == 0 and sensNum == 0:
-            #Current State = 0
-            currentState = stateNotReadyForFlight
-        elif gpsLong != 0 and sensNum != 0 and gpsSpeed < 10:
-            #Current State = 1
-            currentState = stateReadyForFlight
-        else:
-            #Current State = 2
-            currentState = stateInFlight
-        time.sleep(1)   
+    #Change parameters as necessary
+    if gpsLong == 0 and sensNum == 0:
+        #Current State = 0
+        currentState = stateNotReadyForFlight
+    if gpsLong != 0 and sensNum != 0 and gpsSpeed < 10:
+        #Current State = 1
+        currentState = stateReadyForFlight
+    else:
+        #Current State = 2
+        currentState = stateInFlight
+    time.sleep(1)   
 MyGUI()     
