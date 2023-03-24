@@ -6,12 +6,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
 
-print("hello!!!")
-
-def animate(i, gps, data, lines, ax):
+def animate(i, gps, data, lines, ax, index):
     gps.append(next(index))
-    
-    print("how many damn times is this running")
     
     data[0].append(random.randint(9, 11))
     data[1].append(random.randint(15, 25))
@@ -51,7 +47,7 @@ class GroundSensors:
         for j in range(4):
             self.g1DataLines.append(self.axl1.plot([],[])[0])
             
-        self.axl1.legend()
+        # self.axl1.legend()
         
         self.gpsSecListTwo = []
         self.indexTwo = count()
@@ -60,16 +56,17 @@ class GroundSensors:
         self.g2Data = [[], [], [], []]
         self.g2DataLines = []
         for j in range(4):
-            self.g2DataLines.append(self.axl2.plot([],[])[0], label='testlabel2')
+            self.g2DataLines.append(self.axl2.plot([],[])[0])
             
-        self.axl2.legend()
+        # self.axl2.legend()
+        
+    def animation(self):
+        self.aniOne = FuncAnimation(self.fig1, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
+        
+        self.aniTwo = FuncAnimation(self.fig2, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
         
     def returnGraphG1(self):
-        self.aniOne = FuncAnimation(self.fig1, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1))
-        
         return self.fig1
 
-    def returnGraphG2(self):
-        self.aniTwo = FuncAnimation(self.fig2, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2))   
-        
+    def returnGraphG2(self):  
         return self.fig2

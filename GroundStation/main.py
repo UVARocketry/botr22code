@@ -75,52 +75,37 @@ class MyGUI:
         self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
         self.graphframe.pack(fill = 'x')
+        # self.button = ttk.Button(self.root, text = "CLICK ME!")
+        # self.button.pack(fill = 'x')
         
+        #light/dark mode
+        sv_ttk.set_theme("dark")
+
+    def setUpGraphs(self):
         self.anotherFrame = tk.Frame(self.root)
         self.anotherFrame.columnconfigure(0, weight = 1)
         self.anotherFrame.columnconfigure(1, weight = 1)
         
-        self.button = ttk.Button(self.root, text = "CLICK ME!")
-        self.button.pack(fill = 'x')
-        
-        #light/dark mode
-        sv_ttk.set_theme("dark")
-        
         self.groundSensors = CombinedGroundSensors.GroundSensors()
-
-    # def setUpGraphs(self):
         
+        # self.groundSensors.animation()
         
-    #     # self.groundSensors.animation()
+        self.figure1 = self.groundSensors.returnGraphG1()
+        self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
+        self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
         
-    #     self.figure1 = self.groundSensors.returnGraphG1()
-    #     self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
-    #     self.graph1.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+        self.figure2 = self.groundSensors.returnGraphG2()
+        self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
+        self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
-    #     self.anotherFrame.pack(fill = 'x')
+        self.groundSensors.animation()
         
-    #     self.figure2 = self.groundSensors.returnGraphG2()
-    #     self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
-    #     self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+        # self.groundSensors.animation()
         
-    #     # self.groundSensors.animation()
-        
-    #     self.anotherFrame.pack(fill = 'x')
-
-        # btn9 = tk.Button(anotherFrame, text = "1", font = defaultfont)
-        # btn9.grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-
-        # btn10 = tk.Button(anotherFrame, text = "2", font = defaultfont)
-        # btn10.grid(row = 1, column = 1, sticky = tk.W+tk.E)
-
-        # btn11 = tk.Button(anotherFrame, text = "3", font = defaultfont)
-        # btn11.grid(row = 2, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-
-        # btn12 = tk.Button(anotherFrame, text = "4", font = defaultfont)
-        # btn12.grid(row = 2, column = 1, sticky = tk.W+tk.E)
+        self.anotherFrame.pack(fill = 'x')
         
     def mainLoop(self):
-        # self.setUpGraphs()
+        self.setUpGraphs()
         
         #main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -131,6 +116,6 @@ class MyGUI:
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
             self.root.destroy()
             #ser.close();
-   
+
 gui = MyGUI()
 gui.mainLoop()  
