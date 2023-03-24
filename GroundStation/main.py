@@ -88,8 +88,6 @@ class MyGUI:
         
         self.groundSensors = CombinedGroundSensors.GroundSensors()
         
-        # self.groundSensors.animation()
-        
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -99,8 +97,6 @@ class MyGUI:
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
         self.groundSensors.animation()
-        
-        # self.groundSensors.animation()
         
         self.anotherFrame.pack(fill = 'x')
         

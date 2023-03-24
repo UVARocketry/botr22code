@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
+import XbeeReceive
 
 def animate(i, gps, data, lines, ax, index):
     gps.append(next(index))
@@ -61,9 +62,14 @@ class GroundSensors:
         # self.axl2.legend()
         
     def animation(self):
-        self.aniOne = FuncAnimation(self.fig1, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
+        xbee = XbeeReceive.Xbee()
         
-        self.aniTwo = FuncAnimation(self.fig2, animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
+        if xbee.returnState() == 1 | xbee.returnState() == 2:
+            
+            if 
+            self.aniOne = FuncAnimation(self.fig1, animate, frames=None, cache_frame_data=False, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
+            
+            self.aniTwo = FuncAnimation(self.fig2, animate, frames=None, cache_frame_data=False, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
         
     def returnGraphG1(self):
         return self.fig1
