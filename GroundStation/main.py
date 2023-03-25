@@ -14,6 +14,7 @@ from matplotlib.animation import FuncAnimation
 import random
 from itertools import count
 import pandas as pd
+import XbeeReceive
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
@@ -80,14 +81,14 @@ class MyGUI:
         
         #light/dark mode
         sv_ttk.set_theme("dark")
-
-    def setUpGraphs(self):
-        self.anotherFrame = tk.Frame(self.root)
-        self.anotherFrame.columnconfigure(0, weight = 1)
-        self.anotherFrame.columnconfigure(1, weight = 1)
         
         self.groundSensors = CombinedGroundSensors.GroundSensors()
         
+        self.anotherFrame = tk.Frame(self.root)
+        self.anotherFrame.columnconfigure(0, weight = 1)
+        self.anotherFrame.columnconfigure(1, weight = 1)
+
+    def setUpGraphs(self):
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -101,17 +102,21 @@ class MyGUI:
         self.anotherFrame.pack(fill = 'x')
         
     def mainLoop(self):
+        # self.groundSensors.xbeeReceive()
+
         self.setUpGraphs()
-        
-        #main loop and exit protocol
+
+        # main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+            
         self.root.mainloop()
     
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
-            ser.close()
+            
             self.root.destroy()
+            # XbeeReceive.ser.close()
 
 gui = MyGUI()
 gui.mainLoop()  

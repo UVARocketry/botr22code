@@ -3,7 +3,7 @@ import time
 
 class Xbee:
     def __init__(self):
-        self.ser = serial.Serial(port = "COM12", baudrate = 9600)
+        self.ser = serial.Serial(port = "COM3", baudrate = 9600)
         self.sensNum = "0"
         self.gpsHour = ""
         self.gpsMin = ""
@@ -28,7 +28,7 @@ class Xbee:
     
     def receive(self):
         self.buffer = self.ser.readline().decode()
-        #print(buffer)
+        print(self.buffer)
 
         self.tempBuffer = self.buffer.split(',')
         self.sensNum = self.tempBuffer[0]
@@ -50,14 +50,14 @@ class Xbee:
         self.rs2_data_counter = self.tempBuffer[16]
         self.gps_data_counter = self.tempBuffer[17]
         
-        if(self.gpsAltitude > self.currentApogee):
-            self.currentApogee = self.gpsAltitude
+        if float(self.gpsAltitude) > self.currentApogee:
+            self.currentApogee = float(self.gpsAltitude)
         
         #Change parameters as necessary
-        if self.gpsLong == 0 and self.sensNum == 0:
+        if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
             #Current State = 0
             self.currentState = self.stateNotReadyForFlight
-        elif self.gpsLong != 0 and self.sensNum != 0 and self.gpsSpeed < 10:
+        elif float(self.gpsLong) != 0 and int(float(self.sensNum)) != 0 and int(float(self.gpsSpeed)) < 10:
             #Current State = 1
             self.currentState = self.stateReadyForFlight
         else:
@@ -66,18 +66,24 @@ class Xbee:
         time.sleep(1) 
 
     def returnSensData(self):
-        return {self.sensNum, self.temp, self.pressure, self.humidity, self.solarVolt}
+        return [self.sensNum, self.temp, self.pressure, self.humidity, self.solarVolt]
     
     def returnGPSTime(self):
         return self.gpsHour + ":" + self.gpsMin + ":" + self.gpsSec
 
     def returnGPSData(self):
-        return {self.gpsLong, self.gpsLat}
+        return [self.gpsLong, self.gpsLat]
 
     def returnRawData(self):
-        return {self.sensNum, self.gpsHour, self.gpsMin, self.gpsSec, self.gpsMSec, self.gpsLong, self.gpsLat, self.gpsSpeed, self.gpsAngle, self.gpsAltitude, self.gpsSatellites, self.temp, self.pressure, self.humidity, self.solarVolt, self.rs1_data_counter, self.rs2_data_counter, self.gps_data_counter}
+        return [self.sensNum, self.gpsHour, self.gpsMin, self.gpsSec, self.gpsMSec, self.gpsLong, self.gpsLat, self.gpsSpeed, self.gpsAngle, self.gpsAltitude, self.gpsSatellites, self.temp, self.pressure, self.humidity, self.solarVolt, self.rs1_data_counter, self.rs2_data_counter, self.gps_data_counter]
 
     def returnState(self):
         return self.currentState
     
-    
+# xbee = Xbee()
+
+# while True:
+#     xbee.receive()
+#     print(xbee.returnRawData())
+#     print(xbee.returnSensData())
+#     print(xbee.returnState())

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
 import XbeeReceive
+import datetime
 
 class GroundSensors:
     def __init__(self):
@@ -31,6 +32,7 @@ class GroundSensors:
         
         # data from remote sensor 1
         # temp, pressure, humidity, solar voltage
+        self.indexOne = count()
         self.g1Data = [[], [], [], []]
         self.g1DataLines = []
         for j in range(4):
@@ -40,6 +42,7 @@ class GroundSensors:
 
         # data from remote sensor 2
         # temp, pressure, humidity, solar voltage
+        self.indexTwo = count()
         self.g2Data = [[], [], [], []]
         self.g2DataLines = []
         for j in range(4):
@@ -48,13 +51,13 @@ class GroundSensors:
         # self.axl2.legend()
     
     # Appends the data onto the lines
-    def animate(self, i, gps, data, lines, ax):
-        gps.append(xbee.returnGPSTime())
+    def animate(self, i, gps, data, lines, ax, index):
+        gps.append(next(index))
         
-        data[0].append(xbee.returnSensData[0])
-        data[1].append(xbee.returnSensData[1])
-        data[2].append(xbee.returnSensData[2])
-        data[3].append(xbee.returnSensData[3])
+        data[0].append(int(float(xbee.returnSensData[1])))
+        data[1].append(int(float(xbee.returnSensData[2])))
+        data[2].append(int(float(xbee.returnSensData[3])))
+        data[3].append(int(float(xbee.returnSensData[4])))
         
         for j in range(4):
             lines[j].set_data(gps, data[j])
@@ -63,17 +66,20 @@ class GroundSensors:
         
     # Calls the animate function based on which remote sensor sent the data
     def animation(self):
-        self.sensNumber = type(int(self.xbee.returnSensData[0]))
-        self.state = type(int(self.xbee.returnState()))
+        self.sensNumber = int(float(self.xbee.returnSensData()[0]))
+        self.state = int(float(self.xbee.returnState()))
         
-        if self.state == 1 | self.state == 2:
+        if ((self.state == 1) | (self.state == 2)):
             if self.sensNumber == 1:
-                self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g1Data, self.g1DataLines, self.axl1))
+                self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
             elif self.sensNumber == 2:
-                self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g2Data, self.g2DataLines, self.axl2))
+                self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
         
     def returnGraphG1(self):
         return self.fig1
 
     def returnGraphG2(self):  
         return self.fig2
+    
+    def xbeeReceive(self):
+        self.xbee.receive()

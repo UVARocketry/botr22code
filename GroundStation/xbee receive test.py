@@ -23,10 +23,10 @@ humidityTwo = ""
 solarVoltTwo = ""
 
 #State Estimation
-currentState = 0;
-stateNotReadyForFlight = 0;
-stateReadyForFlight = 1;
-stateInFlight = 2;
+currentState = 0
+stateNotReadyForFlight = 0
+stateReadyForFlight = 1
+stateInFlight = 2
 
 
 ser = serial.Serial(port = "COM3", baudrate = 9600)
@@ -75,15 +75,15 @@ while True:
     #     % (sensNum, gpsHour, gpsMin, gpsSec, gpsMSec, gpsLong, gpsLat, gpsSpeed, gpsAngle, gpsAltitude, gpsSatellites, tempTwo, pressureTwo, humidityTwo, solarVoltTwo, rs1_data_counter, rs2_data_counter, gps_data_counter))
 
     #Change parameters as necessary
-    if gpsLong == 0 and sensNum == 0:
-        #Current State = 0
-        currentState = stateNotReadyForFlight
-    elif gpsLong != 0 and sensNum != 0 and gpsSpeed < 10:
-        #Current State = 1
-        currentState = stateReadyForFlight
-    else:
-        #Current State = 2
-        currentState = stateInFlight
+    # if gpsLong == 0 and sensNum == 0:
+    #     #Current State = 0
+    #     currentState = stateNotReadyForFlight
+    # elif gpsLong != 0 and sensNum != 0 and gpsSpeed < 10:
+    #     #Current State = 1
+    #     currentState = stateReadyForFlight
+    # else:
+    #     #Current State = 2
+    #     currentState = stateInFlight
     time.sleep(1)
 
     if currentState == 0:
