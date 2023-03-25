@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
 import XbeeReceive
+import main
 import datetime
 
 class GroundSensors:
     def __init__(self):
-        self.xbee = XbeeReceive.Xbee()
+        self.xbee = main.returnXbee()
         
         self.plt1 = plt
         self.plt2 = plt
@@ -54,10 +55,10 @@ class GroundSensors:
     def animate(self, i, gps, data, lines, ax, index):
         gps.append(next(index))
         
-        data[0].append(int(float(xbee.returnSensData[1])))
-        data[1].append(int(float(xbee.returnSensData[2])))
-        data[2].append(int(float(xbee.returnSensData[3])))
-        data[3].append(int(float(xbee.returnSensData[4])))
+        data[0].append(int(float(self.xbee.returnSensData[1])))
+        data[1].append(int(float(self.xbee.returnSensData[2])))
+        data[2].append(int(float(self.xbee.returnSensData[3])))
+        data[3].append(int(float(self.xbee.returnSensData[4])))
         
         for j in range(4):
             lines[j].set_data(gps, data[j])
@@ -81,5 +82,6 @@ class GroundSensors:
     def returnGraphG2(self):  
         return self.fig2
     
+    #Changed some stuff, so don't know if necessary now
     def xbeeReceive(self):
         self.xbee.receive()

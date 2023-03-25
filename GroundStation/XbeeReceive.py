@@ -3,7 +3,6 @@ import time
 
 class Xbee:
     def __init__(self):
-        self.ser = serial.Serial(port = "COM3", baudrate = 9600)
         self.sensNum = "0"
         self.gpsHour = ""
         self.gpsMin = ""
@@ -79,6 +78,12 @@ class Xbee:
 
     def returnState(self):
         return self.currentState
+    
+    def openSerPort(self):
+        self.ser = serial.Serial(port = "COM3", baudrate = 9600)
+    
+    def closeSerPort(self):
+        self.ser.close()
     
 # xbee = Xbee()
 

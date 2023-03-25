@@ -1,9 +1,13 @@
+#Tkinter Imports
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
+#from tkinter import filedialog
+#from tkinter.filedialog import asksaveasfile
 
+#Matplotlib Imports
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
@@ -11,14 +15,18 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+#Other Imports
 import random
 from itertools import count
 import pandas as pd
-import XbeeReceive
-#from tkinter import filedialog
-#from tkinter.filedialog import asksaveasfile
 
+#Python File Imports
+import XbeeReceive
 import CombinedGroundSensors
+
+#Xbee Import
+import serial
+import time
 
 class MyGUI:
     #Main Method (Calls itself)
@@ -84,11 +92,13 @@ class MyGUI:
         
         self.groundSensors = CombinedGroundSensors.GroundSensors()
         
+        #frames for the matplotlib graphs
         self.anotherFrame = tk.Frame(self.root)
         self.anotherFrame.columnconfigure(0, weight = 1)
         self.anotherFrame.columnconfigure(1, weight = 1)
 
     def setUpGraphs(self):
+        #add graphs to the tkinter gui
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -97,26 +107,34 @@ class MyGUI:
         self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
+        #animate those graphs and then pack to the tkinter gui
         self.groundSensors.animation()
-        
         self.anotherFrame.pack(fill = 'x')
-        
+    
+    def setUpXbee(self):
+        self.xbeeG = self.XbeeReceive.Xbee()
+        self.xbeeG.openSerPort()
+    
     def mainLoop(self):
+        # Don't know why this is necessary
         # self.groundSensors.xbeeReceive()
 
         self.setUpGraphs()
+        self.setUpXbee()
 
         # main loop and exit protocol
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-            
         self.root.mainloop()
     
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
-            
             self.root.destroy()
-            # XbeeReceive.ser.close()
+            self.xbeeG.closeSerPort()
+
+    def returnXbee(self):
+        return self.xbeeG
+    
 
 gui = MyGUI()
 gui.mainLoop()  
