@@ -4,6 +4,7 @@ import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import scrolledtext
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
@@ -58,57 +59,57 @@ class MyGUI:
         self.graphframe.columnconfigure(10, weight = 1)
         self.graphframe.columnconfigure(11, weight = 1)
 
-        #Can use for testing but the it doens't show the actual numbers
-        # self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
-        # self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        # self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
-        # self.space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
-        # self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        # self.space4 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
-        # self.space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
-        # self.space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        # self.space6 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
-        # self.space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
-        # self.space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        # self.space8 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
-        # self.space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
-        # self.space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        # self.space10 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
-        # self.space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
-        # self.space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        # self.space12 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        # self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
+        #Can use for testing but it doens't show the actual numbers
+        self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
+        self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
+        self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
+        self.space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
+        self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
+        self.space4 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
+        self.space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
+        self.space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
+        self.space6 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
+        self.space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
+        self.space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
+        self.space8 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
+        self.space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
+        self.space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
+        self.space10 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
+        self.space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
+        self.space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
+        self.space12 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
-        #Needs work but should show the actual numbers
-        space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
-        space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        space2 = tk.Label(self.graphframe, text = self.xbeeG.currentState, background="#99fb99", font = self.defaultfont)
-        space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
-        space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
-        space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        space4 = tk.Label(self.graphframe, text = self.XbeeG.gpsAltitude, background="#99fb99", font = self.defaultfont)
-        space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
-        space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
-        space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        space6 = tk.Label(self.graphframe, text = self.XBeeG.currentApogee, background="#99fb99", font = self.defaultfont)
-        space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
-        space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
-        space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        space8 = tk.Label(self.graphframe, text = self.XbeeG.gpsSpeed, background="#99fb99", font = self.defaultfont)
-        space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
-        space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
-        space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        space10 = tk.Label(self.graphframe, text = self.XbeeG.gpsAngle, background="#99fb99", font = self.defaultfont)
-        space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
-        space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
-        space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        space12 = tk.Label(self.graphframe, text = self.XbeeG.gpsSatellites, background="#99fb99", font = self.defaultfont)
-        space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
+        #Should show the actual numbers
+        # space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
+        # space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
+        # space2 = tk.Label(self.graphframe, text = self.xbeeG.currentState, background="#99fb99", font = self.defaultfont)
+        # space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
+        # space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
+        # space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
+        # space4 = tk.Label(self.graphframe, text = self.XbeeG.gpsAltitude, background="#99fb99", font = self.defaultfont)
+        # space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
+        # space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
+        # space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
+        # space6 = tk.Label(self.graphframe, text = self.XBeeG.currentApogee, background="#99fb99", font = self.defaultfont)
+        # space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
+        # space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
+        # space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
+        # space8 = tk.Label(self.graphframe, text = self.XbeeG.gpsSpeed, background="#99fb99", font = self.defaultfont)
+        # space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
+        # space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
+        # space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
+        # space10 = tk.Label(self.graphframe, text = self.XbeeG.gpsAngle, background="#99fb99", font = self.defaultfont)
+        # space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
+        # space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
+        # space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
+        # space12 = tk.Label(self.graphframe, text = self.XbeeG.gpsSatellites, background="#99fb99", font = self.defaultfont)
+        # space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
         self.graphframe.pack(fill = 'x')
         # self.button = ttk.Button(self.root, text = "CLICK ME!")
@@ -124,6 +125,11 @@ class MyGUI:
         self.anotherFrame.columnconfigure(0, weight = 1)
         self.anotherFrame.columnconfigure(1, weight = 1)
 
+        #Raw data
+        self.rawDataArea = scrolledtext.ScrolledText(self.anotherFrame, font = self.defaultfont)
+        self.rawDataArea.grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+        self.rawDataArea.insert(tk.INSERT, self.xbeeG.returnRawData())
+
     def setUpGraphs(self):
         #Remote Sensor 1
         self.figure1 = self.groundSensors.returnGraphG1()
@@ -137,10 +143,8 @@ class MyGUI:
         
         #GPS Sensor
         self.figure3 = self.GPSSensor.returnGraphG3()
-        self.graph3 - FigureCanvasTkAgg(self.figure3, self.antherFrame)
+        self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
         self.graph3.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-
-        #Raw Data
 
         #animate those graphs and then pack to the tkinter gui
         self.groundSensors.animation()
@@ -153,7 +157,7 @@ class MyGUI:
     
     def mainLoop(self):
         # Don't know why this is necessary
-        # self.groundSensors.xbeeReceive()
+        #self.groundSensors.xbeeReceive()
 
         self.setUpGraphs()
         self.setUpXbee()
@@ -171,6 +175,5 @@ class MyGUI:
     def returnXbee(self):
         return self.xbeeG
     
-
 gui = MyGUI()
 gui.mainLoop()  
