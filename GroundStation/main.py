@@ -1,10 +1,9 @@
 #Tkinter Imports
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 import tkinter as tk
-import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
+import sv_ttk
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
 
@@ -15,6 +14,7 @@ from matplotlib.figure import Figure
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 
 #Other Imports
 import random
@@ -118,17 +118,20 @@ class MyGUI:
         #light/dark mode
         sv_ttk.set_theme("dark")
         
-        self.groundSensors = CombinedGroundSensors.GroundSensors()
-        
         #frames for the matplotlib graphs
         self.anotherFrame = tk.Frame(self.root)
         self.anotherFrame.columnconfigure(0, weight = 1)
         self.anotherFrame.columnconfigure(1, weight = 1)
+        
+        self.xbeeG = XbeeReceive.Xbee()
+        self.xbeeG.openSerPort()
+        
+        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
 
         #Raw data
-        self.rawDataArea = scrolledtext.ScrolledText(self.anotherFrame, font = self.defaultfont)
-        self.rawDataArea.grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
-        self.rawDataArea.insert(tk.INSERT, self.xbeeG.returnRawData())
+        # self.rawDataArea = scrolledtext.ScrolledText(self.anotherFrame, font = self.defaultfont)
+        # self.rawDataArea.grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
+        # self.rawDataArea.insert(tk.INSERT, self.xbeeG.returnRawData())
 
     def setUpGraphs(self):
         #Remote Sensor 1
@@ -141,39 +144,38 @@ class MyGUI:
         self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
-        #GPS Sensor
-        self.figure3 = self.GPSSensor.returnGraphG3()
-        self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
-        self.graph3.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
+        # #GPS Sensor
+        # self.figure3 = self.GPSSensor.returnGraphG3()
+        # self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
+        # self.graph3.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
 
         #animate those graphs and then pack to the tkinter gui
         self.groundSensors.animation()
-        self.GPSSensor.animation()
+        # self.GPSSensor.animation()
         self.anotherFrame.pack(fill = 'x')
-    
-    def setUpXbee(self):
-        self.xbeeG = self.XbeeReceive.Xbee()
-        self.xbeeG.openSerPort()
     
     def mainLoop(self):
         # Don't know why this is necessary
         #self.groundSensors.xbeeReceive()
-
         self.setUpGraphs()
-        self.setUpXbee()
+        
+        while True:
+            self.xbeeG.receive()
+            print("is this working")
+            
+            # self.setUpXbee()
 
-        # main loop and exit protocol
-        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.root.mainloop()
+            # main loop and exit protocol
+            self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+            self.root.update_idletasks()
+            self.root.update()
+        # self.root.mainloop()
     
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
             self.root.destroy()
             self.xbeeG.closeSerPort()
-
-    def returnXbee(self):
-        return self.xbeeG
     
 gui = MyGUI()
 gui.mainLoop()  

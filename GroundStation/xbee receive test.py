@@ -29,7 +29,7 @@ stateReadyForFlight = 1
 stateInFlight = 2
 
 
-ser = serial.Serial(port = "COM12", baudrate = 9600)
+ser = serial.Serial(port = "COM3", baudrate = 9600)
 
 while True:
 

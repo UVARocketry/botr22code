@@ -6,13 +6,12 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
 import XbeeReceive
-import main
 import datetime
 
 class GroundSensors:
-    def __init__(self):
-        self.xbee = main.returnXbee()
-        
+    def __init__(self, xbee):
+        self.xbee = xbee
+                
         self.plt1 = plt
         self.plt2 = plt
         
@@ -55,10 +54,10 @@ class GroundSensors:
     def animate(self, i, gps, data, lines, ax, index):
         gps.append(next(index))
         
-        data[0].append(int(float(self.xbee.returnSensData[1])))
-        data[1].append(int(float(self.xbee.returnSensData[2])))
-        data[2].append(int(float(self.xbee.returnSensData[3])))
-        data[3].append(int(float(self.xbee.returnSensData[4])))
+        data[0].append(int(float(xbee.returnSensData[1])))
+        data[1].append(int(float(xbee.returnSensData[2])))
+        data[2].append(int(float(xbee.returnSensData[3])))
+        data[3].append(int(float(xbee.returnSensData[4])))
         
         for j in range(4):
             lines[j].set_data(gps, data[j])
@@ -70,10 +69,10 @@ class GroundSensors:
         self.sensNumber = int(float(self.xbee.returnSensData()[0]))
         self.state = int(float(self.xbee.returnState()))
         
-        if ((self.state == 1) | (self.state == 2)):
-            if self.sensNumber == 1:
+        # if ((self.state == 1) | (self.state == 2)):
+        #     if self.sensNumber == 1:
                 self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
-            elif self.sensNumber == 2:
+            # elif self.sensNumber == 2:
                 self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
         
     def returnGraphG1(self):
@@ -81,7 +80,3 @@ class GroundSensors:
 
     def returnGraphG2(self):  
         return self.fig2
-    
-    #Changed some stuff, so don't know if necessary now
-    def xbeeReceive(self):
-        self.xbee.receive()
