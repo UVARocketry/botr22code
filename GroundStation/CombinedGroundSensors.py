@@ -54,10 +54,15 @@ class GroundSensors:
     def animate(self, i, gps, data, lines, ax, index):
         gps.append(next(index))
         
-        data[0].append(int(float(xbee.returnSensData[1])))
-        data[1].append(int(float(xbee.returnSensData[2])))
-        data[2].append(int(float(xbee.returnSensData[3])))
-        data[3].append(int(float(xbee.returnSensData[4])))
+        # data[0].append(float(self.xbee.returnSensData()[1]))
+        # data[1].append(float(self.xbee.returnSensData()[2]))
+        # data[2].append(float(self.xbee.returnSensData()[3]))
+        # data[3].append(float(self.xbee.returnSensData()[4]))
+        
+        data[0].append(random.randint(9, 11))
+        data[1].append(random.randint(15, 25))
+        data[2].append(random.randint(4, 9))
+        data[3].append(random.randint(5, 10))
         
         for j in range(4):
             lines[j].set_data(gps, data[j])
@@ -66,8 +71,8 @@ class GroundSensors:
         
     # Calls the animate function based on which remote sensor sent the data
     def animation(self):
-        self.sensNumber = int(float(self.xbee.returnSensData()[0]))
-        self.state = int(float(self.xbee.returnState()))
+        # self.sensNumber = int(float(self.xbee.returnSensData()[0]))
+        # self.state = int(float(self.xbee.returnState()))
         
         # if ((self.state == 1) | (self.state == 2)):
         #     if self.sensNumber == 1:

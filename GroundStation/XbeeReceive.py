@@ -1,9 +1,10 @@
 import serial
 import time
+import random
 
 class Xbee:
     def __init__(self):
-        self.sensNum = "0"
+        self.sensNum = ""
         self.gpsHour = ""
         self.gpsMin = ""
         self.gpsSec = ""
@@ -26,43 +27,52 @@ class Xbee:
         self.stateInFlight = 2
     
     def receive(self):
-        self.buffer = self.ser.readline().decode()
-        print(self.buffer)
+        # self.buffer = self.ser.readline().decode()
+        # print(self.buffer)
 
-        self.tempBuffer = self.buffer.split(',')
-        self.sensNum = self.tempBuffer[0]
-        self.gpsHour =  self.tempBuffer[1]
-        self.gpsMin =  self.tempBuffer[2]
-        self.gpsSec =  self.tempBuffer[3]
-        self.gpsMSec =  self.tempBuffer[4]
-        self.gpsLong =  self.tempBuffer[5]
-        self.gpsLat = self.tempBuffer[6]
-        self.gpsSpeed = self.tempBuffer[7]
-        self.gpsAngle = self.tempBuffer[8]
-        self.gpsAltitude = self.tempBuffer[9]
-        self.gpsSatellites = self.tempBuffer[10]
-        self.temp = self.tempBuffer[11]
-        self.pressure = self.tempBuffer [12]
-        self.humidity = self.tempBuffer[13]
-        self.solarVolt = self.tempBuffer[14]
-        self.rs1_data_counter = self.tempBuffer[15]
-        self.rs2_data_counter = self.tempBuffer[16]
-        self.gps_data_counter = self.tempBuffer[17]
+        # self.tempBuffer = self.buffer.split(',')
+        # self.sensNum = self.tempBuffer[0]
+        # self.gpsHour =  self.tempBuffer[1]
+        # self.gpsMin =  self.tempBuffer[2]
+        # self.gpsSec =  self.tempBuffer[3]
+        # self.gpsMSec =  self.tempBuffer[4]
+        # self.gpsLong =  self.tempBuffer[5]
+        # self.gpsLat = self.tempBuffer[6]
+        # self.gpsSpeed = self.tempBuffer[7]
+        # self.gpsAngle = self.tempBuffer[8]
+        # self.gpsAltitude = self.tempBuffer[9]
+        # self.gpsSatellites = self.tempBuffer[10]
+        # self.temp = self.tempBuffer[11]
+        # self.pressure = self.tempBuffer [12]
+        # self.humidity = self.tempBuffer[13]
+        # self.solarVolt = self.tempBuffer[14]
+        # self.rs1_data_counter = self.tempBuffer[15]
+        # self.rs2_data_counter = self.tempBuffer[16]
+        # self.gps_data_counter = self.tempBuffer[17]
         
-        if float(self.gpsAltitude) > self.currentApogee:
-            self.currentApogee = float(self.gpsAltitude)
+        # if float(self.gpsAltitude) > self.currentApogee:
+        #     self.currentApogee = float(self.gpsAltitude)
         
-        #Change parameters as necessary
-        if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
-            #Current State = 0
-            self.currentState = self.stateNotReadyForFlight
-        elif float(self.gpsLong) != 0 and int(float(self.sensNum)) != 0 and int(float(self.gpsSpeed)) < 10:
-            #Current State = 1
-            self.currentState = self.stateReadyForFlight
-        else:
-            #Current State = 2
-            self.currentState = self.stateInFlight
-        time.sleep(1) 
+        # #Change parameters as necessary
+        # if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
+        #     #Current State = 0
+        #     self.currentState = self.stateNotReadyForFlight
+        # elif float(self.gpsLong) != 0 and int(float(self.sensNum)) != 0 and int(float(self.gpsSpeed)) < 10:
+        #     #Current State = 1
+        #     self.currentState = self.stateReadyForFlight
+        # else:
+        #     #Current State = 2
+        #     self.currentState = self.stateInFlight
+        # time.sleep(1) 
+        
+        
+        # This is test code
+        self.sensNum = str(random.randint(0, 2))
+        self.temp = str(random.randint(9, 11))
+        self.pressure = str(random.randint(15, 25))
+        self.humidity = str(random.randint(4, 9))
+        self.solarVolt = str(random.randint(5, 10))
+        
 
     def returnSensData(self):
         return [self.sensNum, self.temp, self.pressure, self.humidity, self.solarVolt]

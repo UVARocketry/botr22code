@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from tkinter import scrolledtext
+import tkinter.scrolledtext as st
 import sv_ttk
 #from tkinter import filedialog
 #from tkinter.filedialog import asksaveasfile
@@ -124,16 +124,19 @@ class MyGUI:
         self.anotherFrame.columnconfigure(1, weight = 1)
         
         self.xbeeG = XbeeReceive.Xbee()
-        self.xbeeG.openSerPort()
+        # self.xbeeG.openSerPort()
         
-        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
+        # self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
 
         #Raw data
-        # self.rawDataArea = scrolledtext.ScrolledText(self.anotherFrame, font = self.defaultfont)
+        # self.rawDataArea = st.ScrolledText(self.anotherFrame, font = self.defaultfont)
+        # self.rawDataArea.configure(state ='disabled')
         # self.rawDataArea.grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
-        # self.rawDataArea.insert(tk.INSERT, self.xbeeG.returnRawData())
+        # self.rawDataArea.insert(tk.INSERT, "hello")
 
     def setUpGraphs(self):
+        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
+        
         #Remote Sensor 1
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
@@ -155,21 +158,24 @@ class MyGUI:
         self.anotherFrame.pack(fill = 'x')
     
     def mainLoop(self):
-        # Don't know why this is necessary
-        #self.groundSensors.xbeeReceive()
-        self.setUpGraphs()
         
-        while True:
-            self.xbeeG.receive()
-            print("is this working")
-            
-            # self.setUpXbee()
+        
+        # while True:
+        #     self.xbeeG.receive()
+        #     self.setUpGraphs()
+        #     # self.groundSensors.animation()
+        #     # self.groundSensors.animation()
+        #     # self.rawDataArea.insert(tk.INSERT, "hello")
 
-            # main loop and exit protocol
-            self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-            self.root.update_idletasks()
-            self.root.update()
-        # self.root.mainloop()
+        #     # main loop and exit protocol
+        #     self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+        #     # This should update the animate functions on the graphs
+        #     self.root.update_idletasks()
+        #     self.root.update()
+        self.setUpGraphs()
+        # self.root.after(0, self.xbeeG.receive())
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.root.mainloop()
     
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
