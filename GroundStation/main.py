@@ -1,37 +1,29 @@
-#Tkinter Imports
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 import tkinter as tk
+import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
-import tkinter.scrolledtext as st
-import sv_ttk
-#from tkinter import filedialog
-#from tkinter.filedialog import asksaveasfile
 
-#Matplotlib Imports
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.figure import Figure
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg 
 
-#Other Imports
 import random
 from itertools import count
 import pandas as pd
 
-#Python File Imports
 import XbeeReceive
 import CombinedGroundSensors
-
-#Xbee Import
-import serial
 import time
 
 class MyGUI:
     #Main Method (Calls itself)
     def __init__(self):
+        self.xbee = XbeeReceive.Xbee()
+        
         #Tkinter Portion of Program
         self.root = tk.Tk()
 
@@ -59,7 +51,6 @@ class MyGUI:
         self.graphframe.columnconfigure(10, weight = 1)
         self.graphframe.columnconfigure(11, weight = 1)
 
-        #Can use for testing but it doens't show the actual numbers
         self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
         self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
         self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
@@ -85,103 +76,51 @@ class MyGUI:
         self.space12 = tk.Frame(self.graphframe, background="#99fb99", height=60)
         self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
-        #Should show the actual numbers
-        # space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
-        # space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        # space2 = tk.Label(self.graphframe, text = self.xbeeG.currentState, background="#99fb99", font = self.defaultfont)
-        # space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
-        # space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
-        # space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        # space4 = tk.Label(self.graphframe, text = self.XbeeG.gpsAltitude, background="#99fb99", font = self.defaultfont)
-        # space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
-        # space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
-        # space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        # space6 = tk.Label(self.graphframe, text = self.XBeeG.currentApogee, background="#99fb99", font = self.defaultfont)
-        # space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
-        # space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
-        # space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        # space8 = tk.Label(self.graphframe, text = self.XbeeG.gpsSpeed, background="#99fb99", font = self.defaultfont)
-        # space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
-        # space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
-        # space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        # space10 = tk.Label(self.graphframe, text = self.XbeeG.gpsAngle, background="#99fb99", font = self.defaultfont)
-        # space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
-        # space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
-        # space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        # space12 = tk.Label(self.graphframe, text = self.XbeeG.gpsSatellites, background="#99fb99", font = self.defaultfont)
-        # space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
-
         self.graphframe.pack(fill = 'x')
-        # self.button = ttk.Button(self.root, text = "CLICK ME!")
-        # self.button.pack(fill = 'x')
         
-        #light/dark mode
-        sv_ttk.set_theme("dark")
-        
-        #frames for the matplotlib graphs
         self.anotherFrame = tk.Frame(self.root)
         self.anotherFrame.columnconfigure(0, weight = 1)
         self.anotherFrame.columnconfigure(1, weight = 1)
         
-        self.xbeeG = XbeeReceive.Xbee()
-        # self.xbeeG.openSerPort()
+        self.anotherFrame.pack(fill = 'x')
         
-        # self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
-
-        #Raw data
-        # self.rawDataArea = st.ScrolledText(self.anotherFrame, font = self.defaultfont)
-        # self.rawDataArea.configure(state ='disabled')
-        # self.rawDataArea.grid(row = 1, column = 1, columnspan = 1, sticky = tk.W+tk.E)
-        # self.rawDataArea.insert(tk.INSERT, "hello")
+        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
+        
+        #light/dark mode
+        sv_ttk.set_theme("dark")
 
     def setUpGraphs(self):
-        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbeeG)
-        
-        #Remote Sensor 1
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
         
-        #Remote Sensor 2
         self.figure2 = self.groundSensors.returnGraphG2()
         self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
-        # #GPS Sensor
-        # self.figure3 = self.GPSSensor.returnGraphG3()
-        # self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
-        # self.graph3.get_tk_widget().grid(row = 1, column = 0, columnspan = 1, sticky = tk.W+tk.E)
-
-        #animate those graphs and then pack to the tkinter gui
         self.groundSensors.animation()
-        # self.GPSSensor.animation()
+        
         self.anotherFrame.pack(fill = 'x')
-    
+        
     def mainLoop(self):
+        while True:
+            self.xbee.receive()
+            self.setUpGraphs()
+            
+            #main loop and exit protocol
+            self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+            self.windowUpdate(fps=30)
+            # self.root.mainloop()
         
-        
-        # while True:
-        #     self.xbeeG.receive()
-        #     self.setUpGraphs()
-        #     # self.groundSensors.animation()
-        #     # self.groundSensors.animation()
-        #     # self.rawDataArea.insert(tk.INSERT, "hello")
-
-        #     # main loop and exit protocol
-        #     self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-        #     # This should update the animate functions on the graphs
-        #     self.root.update_idletasks()
-        #     self.root.update()
-        self.setUpGraphs()
-        # self.root.after(0, self.xbeeG.receive())
-        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
-        self.root.mainloop()
+    def windowUpdate(self, fps=60):
+        time.sleep(1/fps)
+        self.root.update()
     
     #Closing Method (Asks user if they really want to close the window)
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
             self.root.destroy()
-            self.xbeeG.closeSerPort()
-    
+            #ser.close();
+
 gui = MyGUI()
 gui.mainLoop()  

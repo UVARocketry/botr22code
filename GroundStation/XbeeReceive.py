@@ -1,6 +1,10 @@
 import serial
 import time
 import random
+import tkinter as tk
+import sv_ttk
+from tkinter import ttk
+from tkinter import messagebox
 
 class Xbee:
     def __init__(self):
@@ -65,13 +69,15 @@ class Xbee:
         #     self.currentState = self.stateInFlight
         # time.sleep(1) 
         
-        
+        print("this should be printin hella times")
         # This is test code
-        self.sensNum = str(random.randint(0, 2))
+        self.sensNum = str(random.randint(1, 2))
         self.temp = str(random.randint(9, 11))
         self.pressure = str(random.randint(15, 25))
         self.humidity = str(random.randint(4, 9))
         self.solarVolt = str(random.randint(5, 10))
+        
+        time.sleep(1)
         
 
     def returnSensData(self):
