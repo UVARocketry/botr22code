@@ -34,8 +34,6 @@ class GroundSensors:
         self.g1DataLines = []
         for j in range(4):
             self.g1DataLines.append(self.axl1.plot([],[])[0])
-            
-        # self.axl1.legend()
         
         self.gpsSecListTwo = []
         self.indexTwo = count()
