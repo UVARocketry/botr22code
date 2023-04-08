@@ -115,7 +115,7 @@ class MyGUI:
         self.anotherFrame.pack(fill='x')
         
     def setUpRawData(self):
-        self.textWidget = scrolledtext.ScrolledText(self.anotherFrame, font=self.defaultfont, width=10)
+        self.textWidget = scrolledtext.ScrolledText(self.anotherFrame, font=self.defaultfont, width='10')
         self.textWidget.grid(row=1, column=0, columnspan=1, sticky = tk.W+tk.E)
         self.anotherFrame.pack(fill = 'x')
         
