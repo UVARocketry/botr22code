@@ -3,6 +3,7 @@ import tkinter as tk
 import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import scrolledtext
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -89,7 +90,7 @@ class MyGUI:
         #light/dark mode
         sv_ttk.set_theme("dark")
 
-    def setUpGraphs(self):
+    def setUpGSGraphs(self):
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -102,15 +103,27 @@ class MyGUI:
         
         self.anotherFrame.pack(fill = 'x')
         
+    def setUpRawData(self):
+        self.textWidget = scrolledtext.ScrolledText(self.anotherFrame, font=self.defaultfont)
+        self.textWidget.grid(row=1, column=0, columnspan=1, sticky = tk.W+tk.E)
+        self.anotherFrame.pack(fill = 'x')
+        
     def mainLoop(self):
+        # Sets up the scroll text widget
+        self.setUpRawData()
+        
         while True:
+            # Receive xbee data (this has a current one second delay)
             self.xbee.receive()
-            self.setUpGraphs()
+            # Sets up graphs and adds new points to the line
+            self.setUpGSGraphs()
+            # Inserts raw data every iteration
+            self.textWidget.insert(tk.INSERT, ' '.join([str(elem) for elem in self.xbee.returnRawData()]) + '\n')
             
-            #main loop and exit protocol
+            # exit protocol
             self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+            # This basically delays the update to keep it at 30 fps so the loop doesn't go too fast and break everything
             self.windowUpdate(fps=30)
-            # self.root.mainloop()
         
     def windowUpdate(self, fps=60):
         time.sleep(1/fps)
