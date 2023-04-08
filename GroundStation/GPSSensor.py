@@ -6,13 +6,11 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib import style
 import XbeeReceive
-import main
 import datetime
 
 class GPS:
-    def __init__(self):
-        self.xbee = main.returnXbee()
-        
+    def __init__(self, xbee):
+        self.xbee = xbee
         self.plt3 = plt
 
         style.use('fivethirtyeight')
@@ -36,8 +34,8 @@ class GPS:
     def animate(self, i, gps, data, lines, ax, index):
         gps.append(next(index))
         
-        data[0].append(int(float(self.xbee.returnGPSData[0])))
-        data[1].append(int(float(self.xbee.returnGPSData[1])))
+        data[0].append(float(self.xbee.returnGPSData()[0]))
+        data[1].append(float(self.xbee.returnGPSData()[1]))
         
         for j in range(2):
             lines[j].set_data(gps, data[j])
@@ -45,9 +43,9 @@ class GPS:
             ax.autoscale_view()
 
     def animation(self):
-        self.state = int(float(self.xbee.returnState()))
+        # self.state = int(float(self.xbee.returnState()))
         
-        if ((self.state == 1) | (self.state == 2)):
+        # if ((self.state == 1) | (self.state == 2)):
             self.aniThree = FuncAnimation(self.fig3, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g3Data, self.g3DataLines, self.axl3, self.indexThree))
     
     def returnGraphG3(self):

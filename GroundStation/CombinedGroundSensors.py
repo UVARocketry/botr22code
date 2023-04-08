@@ -17,13 +17,11 @@ class GroundSensors:
         style.use('fivethirtyeight')
         
         self.fig1, self.axl1 = self.plt1.subplots()
-        self.axl1.set_ylim(ymin = 0, ymax = 30)
         self.axl1.set_title("Remote Sensor One")
         self.axl1.set_xlabel("Time")
         self.axl1.grid(True)
         
         self.fig2, self.axl2 = self.plt2.subplots()
-        self.axl2.set_ylim(ymin = 0, ymax = 30)
         self.axl2.set_title("Remote Sensor Two")
         self.axl2.set_xlabel("Time")
         self.axl2.grid(True)

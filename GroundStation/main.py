@@ -18,6 +18,7 @@ import pandas as pd
 
 import XbeeReceive
 import CombinedGroundSensors
+import GPSSensor
 import time
 
 class MyGUI:
@@ -86,6 +87,7 @@ class MyGUI:
         self.anotherFrame.pack(fill = 'x')
         
         self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
+        self.gps = GPSSensor.GPS(self.xbee)
         
         #light/dark mode
         sv_ttk.set_theme("dark")
@@ -103,6 +105,15 @@ class MyGUI:
         
         self.anotherFrame.pack(fill = 'x')
         
+    def setUpGPSGraph(self):
+        self.figure3 = self.gps.returnGraphG3()
+        self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
+        self.graph3.get_tk_widget().grid(row=1, column=1, columnspan=1, sticky=tk.W+tk.E)
+        
+        self.gps.animation()
+        
+        self.anotherFrame.pack(fill='x')
+        
     def setUpRawData(self):
         self.textWidget = scrolledtext.ScrolledText(self.anotherFrame, font=self.defaultfont)
         self.textWidget.grid(row=1, column=0, columnspan=1, sticky = tk.W+tk.E)
@@ -117,6 +128,8 @@ class MyGUI:
             self.xbee.receive()
             # Sets up graphs and adds new points to the line
             self.setUpGSGraphs()
+            # Sets up GPS graphs and adds the Lat and Long to the graph
+            self.setUpGPSGraph()
             # Inserts raw data every iteration
             self.textWidget.insert(tk.INSERT, ' '.join([str(elem) for elem in self.xbee.returnRawData()]) + '\n')
             

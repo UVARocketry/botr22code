@@ -76,6 +76,9 @@ class Xbee:
         self.humidity = str(random.randint(4, 9))
         self.solarVolt = str(random.randint(5, 10))
         
+        self.gpsLong = str(random.randint(50, 100))
+        self.gpsLat = str(random.randint(100, 150))
+        
         time.sleep(1)
         
 
@@ -90,6 +93,8 @@ class Xbee:
 
     def returnRawData(self):
         # return [self.sensNum, self.gpsHour, self.gpsMin, self.gpsSec, self.gpsMSec, self.gpsLong, self.gpsLat, self.gpsSpeed, self.gpsAngle, self.gpsAltitude, self.gpsSatellites, self.temp, self.pressure, self.humidity, self.solarVolt, self.rs1_data_counter, self.rs2_data_counter, self.gps_data_counter]
+        
+        # test return
         return [1, 2, 4, 5, 6, 67, 238]
 
     def returnState(self):
