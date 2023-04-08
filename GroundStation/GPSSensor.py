@@ -49,4 +49,5 @@ class GPS:
             self.aniThree = FuncAnimation(self.fig3, self.animate, frames=None, cache_frame_data=False, fargs=(self.gpsTimeList, self.g3Data, self.g3DataLines, self.axl3, self.indexThree))
     
     def returnGraphG3(self):
+        self.fig3.legend((self.g3DataLines[0], self.g3DataLines[1]), ('Longitude', 'Latitude'), 'upper right')
         return self.fig3

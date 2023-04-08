@@ -74,7 +74,9 @@ class GroundSensors:
                 self.aniTwo = FuncAnimation(self.fig2, self.animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListTwo, self.g2Data, self.g2DataLines, self.axl2, self.indexTwo))
         
     def returnGraphG1(self):
+        self.fig1.legend((self.g1DataLines[0], self.g1DataLines[1], self.g1DataLines[2], self.g1DataLines[3]), ('Temperature', 'Pressure', 'Humidity', 'Solar Voltage'), 'upper right')
         return self.fig1
 
-    def returnGraphG2(self):  
+    def returnGraphG2(self):
+        self.fig2.legend((self.g2DataLines[0], self.g2DataLines[1], self.g2DataLines[2], self.g2DataLines[3]), ('Temperature', 'Pressure', 'Humidity', 'Solar Voltage'), 'upper right')  
         return self.fig2
