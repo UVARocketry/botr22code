@@ -120,6 +120,7 @@ class MyGUI:
         self.anotherFrame.pack(fill = 'x')
         
     def mainLoop(self):
+        self.xbee.openSerPort()
         # Sets up the scroll text widget
         self.setUpRawData()
         
