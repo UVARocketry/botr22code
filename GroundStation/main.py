@@ -123,10 +123,13 @@ class MyGUI:
     
     def save_file(self):
         file = filedialog.asksaveasfilename(title = "Save Flight Data", filetypes=[('Text File', '*.txt'), ('CSV File', '*.csv')], defaultextension = '.txt')
-        fileWriter= open(file, "w")
-        fileWriter.write(self.textWidget.get('1.0', 'END'))
-        fileWriter.write("Hello")
-        fileWriter.close()
+        
+        if(file):
+            fob= open(file, "w")
+            fob.write(self.textWidget.get('1.0', tk.END))
+            fob.close()
+        else:
+            print("No file Chosen")
 
     def mainLoop(self):
         # Sets up the scroll text widget
