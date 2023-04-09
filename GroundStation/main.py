@@ -4,6 +4,8 @@ import sv_ttk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
+from tkinter import filedialog
+from tkinter.filedialog import asksaveasfile
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -31,7 +33,7 @@ class MyGUI:
 
         #Default visual variables that can be changed
         self.root.geometry("2500x2500")
-        self.root.title("UVA BOTR Ground Station V0.1")
+        self.root.title("UVA BOTR Ground Station V0.2")
         self.defaultfont = ('Arial', 18)
         
         #Main label for top of program, change for every flight test
@@ -61,7 +63,7 @@ class MyGUI:
         self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
         self.space4 = tk.Frame(self.graphframe, background="#99fb99", height=60)
         self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
-        self.space5 = tk.Label(self.graphframe, text = "Apogee", font = self.defaultfont)
+        self.space5 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
         self.space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
         self.space6 = tk.Frame(self.graphframe, background="#99fb99", height=60)
         self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
@@ -73,10 +75,10 @@ class MyGUI:
         self.space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
         self.space10 = tk.Frame(self.graphframe, background="#99fb99", height=60)
         self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
-        self.space11 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
+        self.space11 = tk.Label(self.graphframe, text = "Save:", font = self.defaultfont)
         self.space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
-        self.space12 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space12.grid(row = 0, column = 11, sticky = tk.W+tk.E)
+        self.saveButton = tk.Button(self.graphframe, text = 'Save Data', command= lambda: self.save_file(), background="#99fb99", font = self.defaultfont)
+        self.saveButton.grid(row = 0, column = 11, sticky = tk.W+tk.E)
 
         self.graphframe.pack(fill = 'x')
         
@@ -85,10 +87,10 @@ class MyGUI:
         self.anotherFrame.columnconfigure(1, weight = 1)
         
         self.anotherFrame.pack(fill = 'x')
-        
+
         self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
         self.gps = GPSSensor.GPS(self.xbee)
-        
+
         #light/dark mode
         sv_ttk.set_theme("dark")
 
@@ -118,7 +120,17 @@ class MyGUI:
         self.textWidget = scrolledtext.ScrolledText(self.anotherFrame, font=self.defaultfont, width='10')
         self.textWidget.grid(row=1, column=0, columnspan=1, sticky = tk.W+tk.E)
         self.anotherFrame.pack(fill = 'x')
+    
+    def save_file(self):
+        file = filedialog.asksaveasfilename(title = "Save Flight Data", filetypes=[('Text File', '*.txt'), ('CSV File', '*.csv')], defaultextension = '.txt')
         
+        if(file):
+            fob= open(file, "w")
+            fob.write(self.textWidget.get('1.0', tk.END))
+            fob.close()
+        else:
+            print("No file Chosen")
+
     def mainLoop(self):
         self.xbee.openSerPort()
         # Sets up the scroll text widget
@@ -139,7 +151,7 @@ class MyGUI:
             # This basically delays the update to keep it at 30 fps so the loop doesn't go too fast and break everything
             self.windowUpdate(fps=30)
         
-    def windowUpdate(self, fps=60):
+    def windowUpdate(self, fps=30):
         time.sleep(1/fps)
         self.root.update()
     
