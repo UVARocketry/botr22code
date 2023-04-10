@@ -1,13 +1,13 @@
 # BOTR2022-23
 Battle of the Rockets 2022-23 Github Repository for payload, ground sensors, ground station, etc.
 
-Shown below are the respective folders and the computers/microcontrollers the code wherein is supposed to run on:
+Shown below are the respective folders and the computers/microcontrollers/radios the code wherein is supposed to run on:
 
-    /GroundStation      <- - ->     Laptop
+    /GroundStation      <- - ->     Laptop (Xbee Receive S1 Pro)
 
-    /Payload            <- - ->     Teensy 4.0
+    /Payload            <- - ->     Teensy 4.0 (Xbee Transmit S1 Pro, Xbee Receive S2C)
 
-    /RemoteSensor       <- - ->     Adafruit Feather M0
+    /RemoteSensor       <- - ->     Adafruit Feather M0 (Xbee Transmit S2C)
 
 To get your computer setup to contribute to the code in this repo, you should get Git installed. Ya Git it?
 
