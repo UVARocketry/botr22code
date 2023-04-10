@@ -34,6 +34,7 @@ class MyGUI:
         #Default visual variables that can be changed
         self.root.geometry("2500x2500")
         self.root.title("UVA BOTR Ground Station V0.2")
+        self.root.iconbitmap('uvarocketrylogo.ico')
         self.defaultfont = ('Arial', 18)
         
         #Main label for top of program, change for every flight test
@@ -57,7 +58,7 @@ class MyGUI:
 
         # self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
         # self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        # self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        # self.space2 = tk.Frame(self.graphframe, text=self.xbee.returnState(), font = self.defaultfont)
         # self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
         self.space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
         self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
