@@ -95,7 +95,7 @@ class Xbee:
         return [self.sensNum, self.gpsHour, self.gpsMin, self.gpsSec, self.gpsMSec, self.gpsLong, self.gpsLat, self.gpsSpeed, self.gpsAngle, self.gpsAltitude, self.gpsSatellites, self.temp, self.pressure, self.humidity, self.solarVolt, self.rs1_data_counter, self.rs2_data_counter, self.gps_data_counter]
         
         # test return
-        # return [1, 2, 4, 5, 6, 67, 238]
+        # return [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
 
     def returnState(self):
         return self.currentState

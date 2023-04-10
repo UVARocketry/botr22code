@@ -54,7 +54,7 @@ class GroundSensors:
         # data[2].append(random.randint(4, 9))
         # data[3].append(random.randint(5, 10))
         data[0].append(float(self.xbee.returnSensData()[1]))
-        data[1].append(float(self.xbee.returnSensData()[2]))
+        data[1].append(float(self.xbee.returnSensData()[2]) / 1000)
         data[2].append(float(self.xbee.returnSensData()[3]))
         data[3].append(float(self.xbee.returnSensData()[4]))
         

@@ -55,26 +55,18 @@ class MyGUI:
         self.graphframe.columnconfigure(10, weight = 1)
         self.graphframe.columnconfigure(11, weight = 1)
 
-        self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
-        self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
-        self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
+        # self.space1 = tk.Label(self.graphframe, text = "State:", font = self.defaultfont)
+        # self.space1.grid(row = 0, column = 0, sticky = tk.W+tk.E)
+        # self.space2 = tk.Frame(self.graphframe, background="#99fb99", height=60)
+        # self.space2.grid(row = 0, column = 1, sticky = tk.W+tk.E)
         self.space3 = tk.Label(self.graphframe, text = "Altitude:", font = self.defaultfont)
         self.space3.grid(row = 0, column = 2, sticky = tk.W+tk.E)
-        self.space4 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
         self.space5 = tk.Label(self.graphframe, text = "Satellites:", font = self.defaultfont)
         self.space5.grid(row = 0, column = 4, sticky = tk.W+tk.E)
-        self.space6 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
         self.space7 = tk.Label(self.graphframe, text = "Velocity:", font = self.defaultfont)
         self.space7.grid(row = 0, column = 6, sticky = tk.W+tk.E)
-        self.space8 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
         self.space9 = tk.Label(self.graphframe, text = "Angle:", font = self.defaultfont)
         self.space9.grid(row = 0, column = 8, sticky = tk.W+tk.E)
-        self.space10 = tk.Frame(self.graphframe, background="#99fb99", height=60)
-        self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
         self.space11 = tk.Label(self.graphframe, text = "Save:", font = self.defaultfont)
         self.space11.grid(row = 0, column = 10, sticky = tk.W+tk.E)
         self.saveButton = tk.Button(self.graphframe, text = 'Save Data', command= lambda: self.save_file(), background="#99fb99", font = self.defaultfont)
@@ -93,6 +85,19 @@ class MyGUI:
 
         #light/dark mode
         sv_ttk.set_theme("dark")
+        
+    def setUpTopLabels(self):
+        self.space4 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[9], font=self.defaultfont)
+        self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
+        
+        self.space6 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[10], font=self.defaultfont)
+        self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
+        
+        self.space8 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[7], font=self.defaultfont)
+        self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
+        
+        self.space10 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[8], font=self.defaultfont)
+        self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
 
     def setUpGSGraphs(self):
         self.figure1 = self.groundSensors.returnGraphG1()
@@ -145,6 +150,8 @@ class MyGUI:
             self.setUpGPSGraph()
             # Inserts raw data every iteration
             self.textWidget.insert(tk.INSERT, ' '.join([str(elem) for elem in self.xbee.returnRawData()]) + '\n')
+            # Updates the top labels
+            self.setUpTopLabels()
             
             # exit protocol
             self.root.protocol("WM_DELETE_WINDOW", self.on_closing)

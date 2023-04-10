@@ -34,8 +34,8 @@ class GPS:
     def animate(self, i, gps, data, lines, ax, index):
         gps.append(next(index))
         
-        data[0].append(float(self.xbee.returnGPSData()[0]))
-        data[1].append(float(self.xbee.returnGPSData()[1]))
+        data[0].append(float(self.xbee.returnGPSData()[0]) / 100)
+        data[1].append(float(self.xbee.returnGPSData()[1]) / 100)
         
         for j in range(2):
             lines[j].set_data(gps, data[j])
