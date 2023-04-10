@@ -148,8 +148,9 @@ class MyGUI:
             self.setUpGSGraphs()
             # Sets up GPS graphs and adds the Lat and Long to the graph
             self.setUpGPSGraph()
-            # Inserts raw data every iteration
+            # Inserts raw data every iteration and autoscrolls
             self.textWidget.insert(tk.INSERT, ' '.join([str(elem) for elem in self.xbee.returnRawData()]) + '\n')
+            self.textWidget.yview(tk.END)
             # Updates the top labels
             self.setUpTopLabels()
             
