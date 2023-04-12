@@ -32,7 +32,7 @@ class Xbee:
     
     def receive(self):
         self.buffer = self.ser.readline().decode()
-        print(self.buffer)
+        # print(self.buffer)
 
         self.tempBuffer = self.buffer.split(',')
         self.sensNum = self.tempBuffer[0]

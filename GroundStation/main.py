@@ -34,7 +34,7 @@ class MyGUI:
         #Default visual variables that can be changed
         self.root.geometry("2500x2500")
         self.root.title("UVA BOTR Ground Station V0.2")
-        self.root.iconbitmap('uvarocketrylogo.ico')
+        # self.root.iconbitmap('uvarocketrylogo.ico')
         self.defaultfont = ('Arial', 18)
         
         #Main label for top of program, change for every flight test
