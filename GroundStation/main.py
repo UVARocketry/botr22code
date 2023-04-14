@@ -81,8 +81,8 @@ class MyGUI:
         
         self.anotherFrame.pack(fill = 'x')
 
-        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
-        self.gps = GPSSensor.GPS(self.xbee)
+        # self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
+        # self.gps = GPSSensor.GPS(self.xbee)
 
         #light/dark mode
         sv_ttk.set_theme("dark")
@@ -101,6 +101,7 @@ class MyGUI:
         self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
 
     def setUpGSGraphs(self):
+        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
         self.figure1 = self.groundSensors.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
@@ -114,6 +115,7 @@ class MyGUI:
         self.anotherFrame.pack(fill = 'x')
         
     def setUpGPSGraph(self):
+        self.gps = GPSSensor.GPS(self.xbee)
         self.figure3 = self.gps.returnGraphG3()
         self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
         self.graph3.get_tk_widget().grid(row=1, column=1, columnspan=1, sticky=tk.W+tk.E)
