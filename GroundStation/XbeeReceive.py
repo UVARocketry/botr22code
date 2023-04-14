@@ -25,10 +25,10 @@ class Xbee:
         self.solarVolt = ""
         self.currentApogee = 0
         
-        self.currentState = 0
-        self.stateNotReadyForFlight = 0
-        self.stateReadyForFlight = 1
-        self.stateInFlight = 2
+        # self.currentState = 0
+        # self.stateNotReadyForFlight = 0
+        # self.stateReadyForFlight = 1
+        # self.stateInFlight = 2
     
     def receive(self):
         # self.openSerPort()
@@ -55,8 +55,8 @@ class Xbee:
         self.rs2_data_counter = self.tempBuffer[16]
         self.gps_data_counter = self.tempBuffer[17]
         
-        if float(self.gpsAltitude) > self.currentApogee:
-            self.currentApogee = float(self.gpsAltitude)
+        # if float(self.gpsAltitude) > self.currentApogee:
+        #     self.currentApogee = float(self.gpsAltitude)
         
         #Change parameters as necessary
         # if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
@@ -68,10 +68,7 @@ class Xbee:
         # else:
         #     #Current State = 2
         #     self.currentState = self.stateInFlight
-            
-        # self.closeSerPort()
-        # self.ser.flush()
-        time.sleep(1) 
+        # time.sleep(1) 
 
         # This is test code
         # self.sensNum = str(random.randint(1, 2))
@@ -83,7 +80,7 @@ class Xbee:
         # self.gpsLong = str(random.randint(50, 100))
         # self.gpsLat = str(random.randint(100, 150))
         
-        # time.sleep(1)
+        time.sleep(1)
         
 
     def returnSensData(self):
@@ -101,14 +98,14 @@ class Xbee:
         # test return
         # return [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11]
 
-    def returnState(self):
-        return self.currentState
+    # def returnState(self):
+    #     return self.currentState
     
-    def openSerPort(self):
-        self.ser = serial.Serial(port = "COM7", baudrate = 9600)
+    # def openSerPort(self):
+    #     self.ser = serial.Serial(port = "COM7", baudrate = 9600)
     
-    def closeSerPort(self):
-        self.ser.close()
+    # def closeSerPort(self):
+    #     self.ser.close()
     
 # xbee = Xbee()
 
