@@ -49,7 +49,11 @@ float numSV;
 #define XbeeR Serial1
 #define GPSSerial Serial2
 #define XbeeT Serial3
+<<<<<<< HEAD
 // #define LEDPIN 13
+=======
+//define LEDPIN 13
+>>>>>>> d51bb3cfe6855997e3603161393949ab5542fc58
 #define SD_CS_PIN 10
 
 //DEBUG FLAGS
@@ -69,8 +73,13 @@ Adafruit_GPS GPS(&GPSSerial);
 
 void setup() {
   // indicate that the payload computer is not ready to fly
+<<<<<<< HEAD
   // pinMode(LEDPIN, OUTPUT);
   // digitalWrite(LEDPIN, HIGH);
+=======
+  //pinMode(LEDPIN, OUTPUT);
+  //digitalWrite(LEDPIN, HIGH);
+>>>>>>> d51bb3cfe6855997e3603161393949ab5542fc58
 
   //STARTING SERIAL PORTS
   //USB Serial
@@ -107,7 +116,11 @@ void setup() {
 
   //signal that payload is ready for flight
   //note that this does not mean that the Ground Station is ready
+<<<<<<< HEAD
   // digitalWrite(LEDPIN, LOW);
+=======
+  //digitalWrite(LEDPIN, LOW);
+>>>>>>> d51bb3cfe6855997e3603161393949ab5542fc58
 }
 
 
