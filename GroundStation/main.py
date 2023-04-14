@@ -138,11 +138,15 @@ class MyGUI:
             print("No file Chosen")
 
     def mainLoop(self):
+        self.counter = 0
         self.xbee.openSerPort()
         # Sets up the scroll text widget
         self.setUpRawData()
         
         while True:
+            if (self.counter > 20):
+                self.xbee.ser.flush()
+                self.counter = 0
             # Receive xbee data (this has a current one second delay)
             self.xbee.receive()
             # Sets up graphs and adds new points to the line
@@ -159,6 +163,7 @@ class MyGUI:
             self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
             # This basically delays the update to keep it at 30 fps so the loop doesn't go too fast and break everything
             self.windowUpdate(fps=30)
+            self.counter += 1
         
     def windowUpdate(self, fps=30):
         time.sleep(1/fps)
@@ -168,7 +173,7 @@ class MyGUI:
     def on_closing(self):
         if(messagebox.askyesno(title="Quit?", message="Do you really want to quit?")):
             self.root.destroy()
-            #ser.close();
+            self.xbee.closeSerPort()
 
 gui = MyGUI()
 gui.mainLoop()  

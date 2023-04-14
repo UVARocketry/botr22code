@@ -49,7 +49,7 @@ float numSV;
 #define XbeeR Serial1
 #define GPSSerial Serial2
 #define XbeeT Serial3
-#define LEDPIN 13
+// #define LEDPIN 13
 #define SD_CS_PIN 10
 
 //DEBUG FLAGS
@@ -69,8 +69,8 @@ Adafruit_GPS GPS(&GPSSerial);
 
 void setup() {
   // indicate that the payload computer is not ready to fly
-  pinMode(LEDPIN, OUTPUT);
-  digitalWrite(LEDPIN, HIGH);
+  // pinMode(LEDPIN, OUTPUT);
+  // digitalWrite(LEDPIN, HIGH);
 
   //STARTING SERIAL PORTS
   //USB Serial
@@ -107,7 +107,7 @@ void setup() {
 
   //signal that payload is ready for flight
   //note that this does not mean that the Ground Station is ready
-  digitalWrite(LEDPIN, LOW);
+  // digitalWrite(LEDPIN, LOW);
 }
 
 
@@ -144,71 +144,71 @@ void loop() {
     delay(timer);
     remoteDataBuffer[1] = XbeeR.read();
     delay(timer);
-  }
 
-  if ((remoteDataBuffer[0] == '1' || remoteDataBuffer[0] == '2') && remoteDataBuffer[1] == ',') {
-    while (commaCounter < 4) {
-      currentIndexInBuffer++;
+    if ((remoteDataBuffer[0] == '1' || remoteDataBuffer[0] == '2') && remoteDataBuffer[1] == ',') {
+      while (commaCounter < 4) {
+        currentIndexInBuffer++;
 
-      if (XbeeR.available()) {
-        remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
-        if (remoteDataBuffer[currentIndexInBuffer] == ',') {
-          commaCounter++;
+        if (XbeeR.available()) {
+          remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
+          if (remoteDataBuffer[currentIndexInBuffer] == ',') {
+            commaCounter++;
+          }
         }
-      }
-      delay(timer);
-    }
-
-    //gets three chars more after the forth comma
-    for (int i = 0; i < 4; i++) {
-      currentIndexInBuffer++;
-
-      if (XbeeR.available()) {
-        remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
+        delay(timer);
       }
 
-      delay(timer);
+      //gets three chars more after the forth comma
+      for (int i = 0; i < 4; i++) {
+        currentIndexInBuffer++;
+
+        if (XbeeR.available()) {
+          remoteDataBuffer[currentIndexInBuffer] = XbeeR.read();
+        }
+
+        delay(timer);
+      }
+
+      //parses all the commas
+      sensNum = strtok(remoteDataBuffer, ",");
+      temp = strtok(NULL, ",");
+      pressure = strtok(NULL, ",");
+      humidity = strtok(NULL, ",");
+      solarVolt = strtok(NULL, ",");
+
+      //converts sensor number from string (char arrays) to to int values
+      numSens = atoi(sensNum);
+      //increment rs1/rs2 data counters
+      if (numSens == 1) {
+        rs1_data_counter++;
+      }
+
+      if (numSens == 2) {
+        rs2_data_counter++;
+      }
+
+      // Converts gps data from float to string (character arrays)
+      dtostrf(GPS.hour, 1, 0, gpsHour);
+      dtostrf(GPS.minute, 1, 0, gpsMin);
+      dtostrf(GPS.seconds, 1, 0, gpsSec);
+      dtostrf(GPS.milliseconds, 1, 0, gpsMSec);
+      dtostrf(GPS.latitude, 1, 4, gpsLat);
+      dtostrf(GPS.longitude, 1, 4, gpsLong);
+      dtostrf(GPS.speed, 1, 4, gpsSpeed);
+      dtostrf(GPS.angle, 1, 4, gpsAngle);
+      dtostrf(GPS.altitude, 1, 4, gpsAltitude);
+      dtostrf(GPS.satellites, 1, 0, gpsSatellites);
+
+      // increment gps data counter
+      gps_data_counter++;
+
+      //converts remote sensor temp and solar voltage from string (char arrays) to to float values (used for the reasonability checks)
+      numTemp = atof(temp);
+      numSV = atof(solarVolt);
+
+      // 3. Transmit Data, if ready
+      transmitAllData();
     }
-
-    //parses all the commas
-    sensNum = strtok(remoteDataBuffer, ",");
-    temp = strtok(NULL, ",");
-    pressure = strtok(NULL, ",");
-    humidity = strtok(NULL, ",");
-    solarVolt = strtok(NULL, ",");
-
-    //converts sensor number from string (char arrays) to to int values
-    numSens = atoi(sensNum);
-    //increment rs1/rs2 data counters
-    if (numSens == 1) {
-      rs1_data_counter++;
-    }
-
-    if (numSens == 2) {
-      rs2_data_counter++;
-    }
-
-    // Converts gps data from float to string (character arrays)
-    dtostrf(GPS.hour, 1, 0, gpsHour);
-    dtostrf(GPS.minute, 1, 0, gpsMin);
-    dtostrf(GPS.seconds, 1, 0, gpsSec);
-    dtostrf(GPS.milliseconds, 1, 0, gpsMSec);
-    dtostrf(GPS.latitude, 1, 4, gpsLat);
-    dtostrf(GPS.longitude, 1, 4, gpsLong);
-    dtostrf(GPS.speed, 1, 4, gpsSpeed);
-    dtostrf(GPS.angle, 1, 4, gpsAngle);
-    dtostrf(GPS.altitude, 1, 4, gpsAltitude);
-    dtostrf(GPS.satellites, 1, 0, gpsSatellites);
-
-    // increment gps data counter
-    gps_data_counter++;
-
-    //converts remote sensor temp and solar voltage from string (char arrays) to to float values (used for the reasonability checks)
-    numTemp = atof(temp);
-    numSV = atof(solarVolt);
-
-    // 3. Transmit Data, if ready
-    transmitAllData();
   }
 }
 

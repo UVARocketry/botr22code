@@ -31,6 +31,7 @@ class Xbee:
         self.stateInFlight = 2
     
     def receive(self):
+        # self.openSerPort()
         self.buffer = self.ser.readline().decode()
         # print(self.buffer)
 
@@ -58,15 +59,18 @@ class Xbee:
             self.currentApogee = float(self.gpsAltitude)
         
         #Change parameters as necessary
-        if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
-            #Current State = 0
-            self.currentState = self.stateNotReadyForFlight
-        elif float(self.gpsLong) != 0 and int(float(self.sensNum)) != 0 and int(float(self.gpsSpeed)) < 10:
-            #Current State = 1
-            self.currentState = self.stateReadyForFlight
-        else:
-            #Current State = 2
-            self.currentState = self.stateInFlight
+        # if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
+        #     #Current State = 0
+        #     self.currentState = self.stateNotReadyForFlight
+        # elif float(self.gpsLong) != 0 and int(float(self.sensNum)) != 0 and int(float(self.gpsSpeed)) < 10:
+        #     #Current State = 1
+        #     self.currentState = self.stateReadyForFlight
+        # else:
+        #     #Current State = 2
+        #     self.currentState = self.stateInFlight
+            
+        # self.closeSerPort()
+        # self.ser.flush()
         time.sleep(1) 
 
         # This is test code
