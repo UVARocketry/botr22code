@@ -19,7 +19,8 @@ from itertools import count
 import pandas as pd
 
 import XbeeReceive
-import CombinedGroundSensors
+import GroundSensorOne
+import GroundSensorTwo
 import GPSSensor
 import time
 
@@ -81,8 +82,9 @@ class MyGUI:
         
         self.anotherFrame.pack(fill = 'x')
 
-        # self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
-        # self.gps = GPSSensor.GPS(self.xbee)
+        self.g1 = GroundSensorOne.GroundSensorOne(self.xbee)
+        self.g2 = GroundSensorTwo.GroundSensorTwo(self.xbee)
+        self.gps = GPSSensor.GPS(self.xbee)
 
         #light/dark mode
         sv_ttk.set_theme("dark")
@@ -101,21 +103,20 @@ class MyGUI:
         self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
 
     def setUpGSGraphs(self):
-        self.groundSensors = CombinedGroundSensors.GroundSensors(self.xbee)
-        self.figure1 = self.groundSensors.returnGraphG1()
+        self.figure1 = self.g1.returnGraphG1()
         self.graph1 = FigureCanvasTkAgg(self.figure1, self.anotherFrame)
         self.graph1.get_tk_widget().grid(row = 0, column = 0, columnspan = 1, sticky = tk.W+tk.E)
         
-        self.figure2 = self.groundSensors.returnGraphG2()
+        self.figure2 = self.g2.returnGraphG2()
         self.graph2 = FigureCanvasTkAgg(self.figure2, self.anotherFrame)
         self.graph2.get_tk_widget().grid(row = 0, column = 1, columnspan = 1, sticky = tk.W+tk.E)
         
-        self.groundSensors.animation()
+        self.g1.animation()
+        self.g2.animation()
         
         self.anotherFrame.pack(fill = 'x')
         
     def setUpGPSGraph(self):
-        self.gps = GPSSensor.GPS(self.xbee)
         self.figure3 = self.gps.returnGraphG3()
         self.graph3 = FigureCanvasTkAgg(self.figure3, self.anotherFrame)
         self.graph3.get_tk_widget().grid(row=1, column=1, columnspan=1, sticky=tk.W+tk.E)
@@ -144,17 +145,16 @@ class MyGUI:
         self.xbee.openSerPort()
         # Sets up the scroll text widget
         self.setUpRawData()
+        # Sets up GPS graphs and adds the Lat and Long to the graph
+        self.setUpGPSGraph()
         
         while True:
-            if (self.counter > 20):
-                self.xbee.ser.flush()
-                self.counter = 0
             # Receive xbee data (this has a current one second delay)
             self.xbee.receive()
-            # Sets up graphs and adds new points to the line
-            self.setUpGSGraphs()
-            # Sets up GPS graphs and adds the Lat and Long to the graph
-            self.setUpGPSGraph()
+            if (self.counter < 10):
+                # Sets up graphs and adds new points to the line
+                self.setUpGSGraphs()
+            
             # Inserts raw data every iteration and autoscrolls
             self.textWidget.insert(tk.INSERT, ' '.join([str(elem) for elem in self.xbee.returnRawData()]) + '\n')
             self.textWidget.yview(tk.END)

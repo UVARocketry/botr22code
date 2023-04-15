@@ -55,8 +55,8 @@ class Xbee:
         self.rs2_data_counter = self.tempBuffer[16]
         self.gps_data_counter = self.tempBuffer[17]
         
-        # if float(self.gpsAltitude) > self.currentApogee:
-        #     self.currentApogee = float(self.gpsAltitude)
+        if float(self.gpsAltitude) > self.currentApogee:
+            self.currentApogee = float(self.gpsAltitude)
         
         #Change parameters as necessary
         # if float(self.gpsLong) == 0 and int(float(self.sensNum)) == 0:
@@ -101,11 +101,11 @@ class Xbee:
     # def returnState(self):
     #     return self.currentState
     
-    # def openSerPort(self):
-    #     self.ser = serial.Serial(port = "COM7", baudrate = 9600)
+    def openSerPort(self):
+        self.ser = serial.Serial(port = "COM7", baudrate = 9600)
     
-    # def closeSerPort(self):
-    #     self.ser.close()
+    def closeSerPort(self):
+        self.ser.close()
     
 # xbee = Xbee()
 
