@@ -90,16 +90,16 @@ class MyGUI:
         sv_ttk.set_theme("dark")
         
     def setUpTopLabels(self):
-        self.space4 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[9], font=self.defaultfont)
+        self.space4 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[9] + "m", font=self.defaultfont)
         self.space4.grid(row = 0, column = 3, sticky = tk.W+tk.E)
         
-        self.space6 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[10], font=self.defaultfont)
+        self.space6 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[10] + "m/s", font=self.defaultfont)
         self.space6.grid(row = 0, column = 5, sticky = tk.W+tk.E)
         
-        self.space8 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[7], font=self.defaultfont)
+        self.space8 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[7] , font=self.defaultfont)
         self.space8.grid(row = 0, column = 7, sticky = tk.W+tk.E)
         
-        self.space10 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[8], font=self.defaultfont)
+        self.space10 = tk.Label(self.graphframe, text=self.xbee.returnRawData()[8] + "°", font=self.defaultfont)
         self.space10.grid(row = 0, column = 9, sticky = tk.W+tk.E)
 
     def setUpGSGraphs(self):

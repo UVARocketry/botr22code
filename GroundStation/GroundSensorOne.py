@@ -47,5 +47,5 @@ class GroundSensorOne:
             self.aniOne = FuncAnimation(self.fig1, self.animate, frames=None, cache_frame_data=False, interval=1000, fargs=(self.gpsSecListOne, self.g1Data, self.g1DataLines, self.axl1, self.indexOne))
         
     def returnGraphG1(self):
-        self.fig1.legend((self.g1DataLines[0], self.g1DataLines[1], self.g1DataLines[2], self.g1DataLines[3]), ('Temperature', 'Pressure', 'Humidity', 'Solar Voltage'), 'upper right')
+        self.fig1.legend((self.g1DataLines[0], self.g1DataLines[1], self.g1DataLines[2], self.g1DataLines[3]), ('Temperature(C)', 'Pressure(kPa)', 'Humidity(%)', 'Solar Voltage(V)'), 'upper right')
         return self.fig1
